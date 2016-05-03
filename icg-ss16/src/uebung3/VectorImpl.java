@@ -5,8 +5,20 @@ import java.nio.FloatBuffer;
 import ogl.vecmath.Vector;
 
 public class VectorImpl implements Vector {
-	
+
 	float[] vector = new float[3];
+
+	public VectorImpl(float x, float y, float z) {
+		this.vector[0] = x;
+		this.vector[1] = y;
+		this.vector[2] = z;
+	}
+
+	public VectorImpl(Vector v) {
+		this.vector[0] = v.x();
+		this.vector[1] = v.y();
+		this.vector[2] = v.z();
+	}
 
 	@Override
 	public float x() {
@@ -25,32 +37,27 @@ public class VectorImpl implements Vector {
 
 	@Override
 	public Vector add(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImpl(x() + v.x(), y() + v.y(), z() + v.z());
 	}
 
 	@Override
 	public Vector sub(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImpl(x() - v.x(), y() - v.y(), z() - v.z());
 	}
 
 	@Override
 	public Vector mult(float s) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImpl(x() * s, y() * s, z() * s);
 	}
 
 	@Override
 	public Vector mult(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImpl(x() * v.x(), y() * v.y(), z() * v.z());
 	}
 
 	@Override
 	public float length() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (float) Math.sqrt(quadriereVector());
 	}
 
 	@Override
@@ -58,27 +65,24 @@ public class VectorImpl implements Vector {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public float quadriereVector(Vector v){
-		return v.x()*v.x()+v.y()*v.y()+v.z()*v.z();
+
+	public float quadriereVector() {
+		return x() * x() + y() * y() + z() * z();
 	}
 
 	@Override
 	public float dot(Vector v) {
-		// TODO Auto-generated method stub
-		return 0;
+		return x() * v.x() + y() * v.y() + z() * v.z();
 	}
 
 	@Override
 	public Vector cross(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImpl(y() * v.z() - z() * v.y(), z() * v.x() - x() * v.z(), x() * v.y() - y() * v.x());
 	}
 
 	@Override
 	public float[] asArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return vector;
 	}
 
 	@Override
@@ -95,14 +99,16 @@ public class VectorImpl implements Vector {
 
 	@Override
 	public int compareTo(Vector o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) (length() - o.length());
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return vector.length;
+	}
+
+	public String toString() {
+		return x() + "," + y() + "," + z();
 	}
 
 }
