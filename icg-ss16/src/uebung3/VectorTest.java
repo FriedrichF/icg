@@ -1,13 +1,15 @@
 package uebung3;
 
-import ogl.vecmath.Vector;
+import ogl.vecmath.Matrix;
 
 public class VectorTest {
 
 	public static void main(String[] args) {
-		Vector p1 = new VectorImpl(1,1,1);
-		Vector p2 = new VectorImpl(4,3,2);
-		System.out.println(p1.compareTo(p2));
+		float[] m1 = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+		float[] m2 = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+		Matrix p1 = new MatrixImpl(m1);
+		Matrix p2 = new MatrixImpl(m2);
+		System.out.println(p1.mult(p2));
 	}
 
 }
