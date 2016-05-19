@@ -23,7 +23,7 @@ public class RotatingTriangleMain extends JFrame{
 	/**
 	 * the triangle instance to be rendered
 	 */
-	private RotatingTriangleBase toRender;
+	private RotatingTriangleBase toRender; // = makeCube(0.5f, 0.5f, 0.5f);
 
 	/**
 	 * a timer
@@ -34,6 +34,7 @@ public class RotatingTriangleMain extends JFrame{
 		// create an instance of this class
 		RotatingTriangleMain instance = new RotatingTriangleMain();
 
+		long stepTime = 0L;
 		// initialize timer
 		resetTimer();
 		// loop until window is closed
@@ -41,13 +42,13 @@ public class RotatingTriangleMain extends JFrame{
 			// update window/image bounds
 			instance.updateWindow();
 			// update triangle vertices
-			instance.simulate( getElapsedMillis() );
+			instance.simulate( stepTime = getElapsedMillis() );
 			// store time of last r
 			// render the triangle
 			instance.render();
 
 			// wait a (milli)second...
-			sleep(1);
+			sleep(Math.max(0, 16 - stepTime));
 		}
 	}
 
@@ -60,12 +61,16 @@ public class RotatingTriangleMain extends JFrame{
 		setSize(width, height);
 		setVisible(true);
 
-		// create new rotating triangle instance
-		toRender = new RotatingTriangle(
-				MyMathFactory.vector(150, 150, 0), 
-				MyMathFactory.vector(250, 250, 0),
-				MyMathFactory.vector(150, 250, 0)
-				);		
+		// if no object to be rendered was set before, create a new triangle
+		if (toRender == null)
+			toRender = new RotatingTriangle(
+					new Vertex(MyMathFactory.vector(-0.5f, -0.5f, 0.5f), MyMathFactory.color(1, 0, 0)), 
+					new Vertex(MyMathFactory.vector( 0.5f, -0.5f, 0.5f), MyMathFactory.color(0, 1, 0)),
+					new Vertex(MyMathFactory.vector( 0.5f,  0.5f, 0.5f), MyMathFactory.color(0, 0, 1))
+					);		
+		
+		// set the rotation axis
+		toRender.setRotationAxis(MyMathFactory.vector(0, 1, -1));
 	}
 
 	/**
@@ -79,9 +84,9 @@ public class RotatingTriangleMain extends JFrame{
 		// if either there is no image, or its dimension does not match the current window size, create a new image
 		if (imgToRender == null || imgToRender.getWidth() != width || imgToRender.getHeight() != height)
 			imgToRender = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		
+
 		Graphics g = imgToRender.createGraphics();
-		g.setColor(new Color(toRender.getBackgroundColor().toAwtColor()));
+		g.setColor(new Color(RotatingTriangle.defaultBackgroundColor.toAwtColor()));
 		g.fillRect(0, 0, width, height);
 	}
 
@@ -93,17 +98,42 @@ public class RotatingTriangleMain extends JFrame{
 	public void simulate(long elapsedMilliseconds){
 		// get matrix from the triangle
 		Matrix currMat = toRender.getTransform();
-		
+
 		// use default implementation (i.e. rotate by 90 degrees per second) if retrieved transform is null
-		if (currMat == null) {
-			Vector center = toRender.getCenter();			
-			currMat = MyMathFactory.translationMatrix(MyMathFactory.vector(width/2, height/2, 0));
-			currMat = currMat.mult(MyMathFactory.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f));
-			currMat = currMat.mult(MyMathFactory.translationMatrix(center.mult(-1)));
-		}
+		currMat = currMat.mult(MyMathFactory.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f));
 
 		// apply the transformation to the triangle
-		toRender.transform(currMat);
+		toRender.setTransform(currMat);
+	}
+
+
+
+	// create new rotating triangle instance with multiple triangles (compare to rotating cube)
+	public RotatingTriangle makeCube(float cwidth, float cheight, float cdepth) {
+		return new RotatingTriangle(new Vertex[]{
+				new Vertex(MyMathFactory.vector(-cwidth, -cheight, cdepth), MyMathFactory.color(1, 0, 0)), 
+				new Vertex(MyMathFactory.vector( cwidth, -cheight, cdepth), MyMathFactory.color(0, 1, 0)),
+				new Vertex(MyMathFactory.vector( cwidth,  cheight, cdepth), MyMathFactory.color(0, 0, 1)),
+				new Vertex(MyMathFactory.vector(-cwidth,  cheight, cdepth), MyMathFactory.color(1, 0, 1)),
+
+				new Vertex(MyMathFactory.vector( cwidth, -cheight, -cdepth), MyMathFactory.color(1, 0, 0)), 
+				new Vertex(MyMathFactory.vector(-cwidth, -cheight, -cdepth), MyMathFactory.color(0, 1, 0)),
+				new Vertex(MyMathFactory.vector(-cwidth,  cheight, -cdepth), MyMathFactory.color(0, 0, 1)),
+				new Vertex(MyMathFactory.vector( cwidth,  cheight, -cdepth), MyMathFactory.color(1, 0, 1))
+		}, new int[]{
+				//front
+				0,1,2,  2,3,0, 
+				//back
+				4,5,6, 	6,7,4,
+				// right
+				1,4,7,	7,2,1,
+				// top
+				3,2,7,	7,6,3,
+				//left
+				5,0,3,	3,6,5,
+				//bottom
+				5,4,1,	1,0,5
+		});
 	}
 
 
@@ -123,11 +153,11 @@ public class RotatingTriangleMain extends JFrame{
 		if (imgToRender != null)
 			g.drawImage( imgToRender, 0, 0, null);
 	}
-	
+
 	/********************
 	 * Helper Functions *
 	 ********************/
-	
+
 	/**
 	 * reset the timer
 	 */
@@ -140,7 +170,7 @@ public class RotatingTriangleMain extends JFrame{
 	 */
 	private static long getElapsedMillis(){
 		long retVal = System.currentTimeMillis() - lastStep;
-		lastStep = System.currentTimeMillis();
+		lastStep += retVal;
 		return retVal;		
 	}
 

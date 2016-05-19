@@ -6,6 +6,10 @@ import icg.math.RGBColorImpl;
 import ogl.vecmath.*;
 
 public class LineImpl extends Line {
+
+	public Color color1;
+	public Color color2;
+
 	/**
 	 * constructor, sets vertices of this line
 	 * 
@@ -16,6 +20,12 @@ public class LineImpl extends Line {
 	 */
 	public LineImpl(Vector p1, Vector p2) {
 		super(p1, p2);
+	}
+
+	public LineImpl(Vertex vertex1, Vertex vertex2) {
+		super(vertex1.position, vertex2.position);
+		this.color1 = vertex1.color;
+		this.color2 = vertex2.color;
 	}
 
 	/**
@@ -46,19 +56,17 @@ public class LineImpl extends Line {
 	@Override
 	public ArrayList<Pixel> getPixels(int width, int height) {
 		ArrayList<Pixel> pixels = new ArrayList<Pixel>();
-		
+
 		int x0 = (int) p1.x();
 		int x1 = (int) p2.x();
 		int y0 = (int) p1.y();
 		int y1 = (int) p2.y();
-		
+
 		int dx = (int) Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
 		int dy = (int) -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
 		int err = dx + dy, e2; /* error value e_xy */
 
-		int i = 0;
 		while (true) {
-			i++;
 			pixels.add(new Pixel((int) x0, (int) y0, new RGBColorImpl(1, 1, 1)));
 			if (x0 == x1 && y0 == y1)
 				break;
@@ -72,7 +80,19 @@ public class LineImpl extends Line {
 				y0 += sy;
 			} /* e_xy+e_y < 0 */
 		}
-		
+
+		for (int i = 0; i < pixels.size(); i++) {
+			float step = (float) i / pixels.size();
+			pixels.get(i).color = new RGBColorImpl(getInterpolation(step, color1.getR(), color2.getR()),
+					getInterpolation(step, color1.getG(), color2.getG()),
+					getInterpolation(step, color1.getB(), color2.getB()));
+		}
+
 		return pixels;
+	}
+
+	private float getInterpolation(float time, float color1, float color2) {
+		float result = (1 - time) * color1 + time * color2;
+		return result;
 	}
 }

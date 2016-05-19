@@ -5,25 +5,19 @@ import java.awt.image.BufferedImage;
 import ogl.vecmath.*;
 
 abstract class RotatingTriangleBase {
-	protected Matrix localTrafo = null;
-	
-	/**
-	 * Multiplies every vertex of this Triangle with the given Matrix
-	 * @param m the matrix to be applied to the points of this triangle  
-	 */
-	public abstract void transform(Matrix m);
-	
-	/**
-	 * returns the center of the triangle
-	 * @return a vector representing the center of the triangle
-	 */
-	public abstract Vector getCenter();
+	protected Matrix localTrafo = MyMathFactory.translationMatrix(MyMathFactory.vector(0, 0, 0));
 	
 	/**
 	 * returns the rotation axis
 	 * @return the rotation axis
 	 */
 	public abstract Vector getRotationAxis();
+	
+	/**
+	 * set the new rotation axis
+	 * @param axis the new rotation axis
+	 */
+	public abstract void setRotationAxis(Vector axis);
 	
 	/**
 	 * Renders the triangle into a given image. The default implementation calls the pixelColorAt method for each pixel.
@@ -41,15 +35,15 @@ abstract class RotatingTriangleBase {
 	}
 	
 	/**
+	 * set the viewing distance (camera position)
+	 * @param zPos the viewing distance
+	 */
+	public abstract void setViewDistance(float zPos);
+	
+	/**
 	 *  updates the local transformation
 	 */
 	public void setTransform(Matrix m){
 		localTrafo = m;
 	}
-
-	/**
-	 * specifies the background color of the image
-	 * @return the background color of the image
-	 */
-	public abstract Color getBackgroundColor(); 
 }

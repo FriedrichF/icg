@@ -4,7 +4,7 @@ import ogl.vecmath.Color;
 
 public class Pixel {
 	final public int x, y;
-	final public Color color;
+	public Color color;
 	
 	public Pixel(int x, int y, Color c) {
 		this.color = c;
