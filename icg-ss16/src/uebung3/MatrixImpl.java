@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
+import ogl.vecmathimp.VectorImp;
 
 public class MatrixImpl implements Matrix {
 
@@ -40,13 +41,13 @@ public class MatrixImpl implements Matrix {
 
 		return new MatrixImpl(result);
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		String result = "";
 		for (int i = 0; i < matrix.length; i++) {
-			if(i %4 == 0)
-				result+="\n";
-			result += matrix[i] +"|";
+			if (i % 4 == 0)
+				result += "\n";
+			result += matrix[i] + "|";
 		}
 		return result;
 	}
@@ -59,14 +60,17 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Vector transformPoint(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImp(matrix[0] * v.x() + matrix[1] * v.y() + matrix[2] * v.z() + matrix[3] * 1.0f,
+				matrix[4] * v.x() + matrix[5] * v.y() + matrix[6] * v.z() + matrix[7] * 1.0f,
+				matrix[8] * v.x() + matrix[9] * v.y() + matrix[10] * v.z() + matrix[11] * 1.0f);
 	}
 
 	@Override
 	public Vector transformDirection(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return new VectorImp(matrix[0] * v.x() + matrix[1] * v.y() + matrix[2] * v.z() + matrix[3] * 0.0f,
+				matrix[4] * v.x() + matrix[5] * v.y() + matrix[6] * v.z() + matrix[7] * 0.0f,
+				matrix[8] * v.x() + matrix[9] * v.y() + matrix[10] * v.z() + matrix[11] * 0.0f);
 	}
 
 	@Override
@@ -77,8 +81,15 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Matrix transpose() {
-		// TODO Auto-generated method stub
-		return null;
+		float[] result = new float[16];
+		
+		for(int resultIndex = 0; resultIndex < matrix.length; resultIndex++){
+				result[resultIndex] = matrix[(resultIndex*4)%15];
+		}
+		
+		result[15] = matrix[15];
+		
+		return new MatrixImpl(result);
 	}
 
 	@Override
