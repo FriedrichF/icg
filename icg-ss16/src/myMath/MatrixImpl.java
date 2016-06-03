@@ -11,6 +11,10 @@ public class MatrixImpl implements Matrix {
 
 	MatrixCore inverseData, data;
 
+	public void setInverseData(MatrixCore inverseData) {
+		this.inverseData = inverseData;
+	}
+
 	public MatrixImpl(float[] vals) {
 		data = new MatrixCore(vals);
 		inverseData = new MatrixCore(vals);
@@ -117,8 +121,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public float[] asArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return data.getMatrix();
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
+import icg.math.FactoryImpl;
 import ogl.vecmath.*;
 
 public class RotatingTriangleMain extends JFrame{
@@ -100,7 +101,8 @@ public class RotatingTriangleMain extends JFrame{
 		Matrix currMat = toRender.getTransform();
 
 		// use default implementation (i.e. rotate by 90 degrees per second) if retrieved transform is null
-		currMat = currMat.mult(MyMathFactory.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f));
+		Matrix rotationMatrix = FactoryImpl.vecmath.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f);
+		currMat = currMat.mult(rotationMatrix);
 
 		// apply the transformation to the triangle
 		toRender.setTransform(currMat);
