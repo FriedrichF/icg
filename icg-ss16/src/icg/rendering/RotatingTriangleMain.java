@@ -24,7 +24,7 @@ public class RotatingTriangleMain extends JFrame{
 	/**
 	 * the triangle instance to be rendered
 	 */
-	private RotatingTriangleBase toRender = makePyramide(0.5f, 0.5f, 0.5f);
+	private RotatingTriangleBase toRender = makeCube(0.5f, 0.5f, 0.5f);
 
 	/**
 	 * a timer
@@ -101,14 +101,12 @@ public class RotatingTriangleMain extends JFrame{
 		Matrix currMat = toRender.getTransform();
 
 		// use default implementation (i.e. rotate by 90 degrees per second) if retrieved transform is null
-		Matrix rotationMatrix = FactoryImpl.vecmath.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f);
+		Matrix rotationMatrix = FactoryImpl.vecmath.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 20000f);
 		currMat = currMat.mult(rotationMatrix);
 
 		// apply the transformation to the triangle
 		toRender.setTransform(currMat);
 	}
-
-
 
 	// create new rotating triangle instance with multiple triangles (compare to rotating cube)
 	public RotatingTriangle makeCube(float cwidth, float cheight, float cdepth) {
@@ -191,7 +189,7 @@ public class RotatingTriangleMain extends JFrame{
 	private static long getElapsedMillis(){
 		long retVal = System.currentTimeMillis() - lastStep;
 		lastStep += retVal;
-		return retVal;		
+		return retVal;
 	}
 
 	/**

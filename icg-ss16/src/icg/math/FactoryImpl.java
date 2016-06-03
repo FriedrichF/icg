@@ -90,39 +90,36 @@ public class FactoryImpl implements Factory {
 
 	@Override
 	public Matrix rotationMatrix(float ax, float ay, float az, float angle) {
-		Matrix matrixResult = identityMatrix();
-		if (ax == 1.0f) {
-			float[] matrixArrayX = identityMatrix().asArray();
-			matrixArrayX[5] = (float) Math.cos(angle);
-			matrixArrayX[6] = (float) -Math.sin(angle);
-			matrixArrayX[9] = (float) Math.sin(angle);
-			matrixArrayX[10] = (float) Math.cos(angle);
-			Matrix matrixX = new MatrixImpl(matrixArrayX);
-			matrixResult = matrixResult.mult(matrixX);
-		}
-		if (ay == 1.0f) {
-			float[] matrixArrayY = identityMatrix().asArray();
-			matrixArrayY[0] = (float) Math.cos(angle);
-			matrixArrayY[2] = (float) Math.sin(angle);
-			matrixArrayY[8] = (float) -Math.sin(angle);
-			matrixArrayY[10] = (float) Math.cos(angle);
-			Matrix matrixY = new MatrixImpl(matrixArrayY);
-			matrixResult = matrixResult.mult(matrixY);
-		}
-		if (az == 1.0f) {
-			float[] matrixArrayZ = identityMatrix().asArray();
-			matrixArrayZ[0] = (float) Math.cos(angle);
-			matrixArrayZ[1] = (float) -Math.sin(angle);
-			matrixArrayZ[4] = (float) Math.sin(angle);
-			matrixArrayZ[5] = (float) Math.cos(angle);
-			Matrix matrixZ = new MatrixImpl(matrixArrayZ);
-			matrixResult = matrixResult.mult(matrixZ);
-		}
-		
-		Matrix test = new MatrixImpl(new MatrixCore(matrixResult.asArray()),
-				new MatrixCore(matrixResult.transpose().asArray()));
+		float[] matrix = new float[16];
 
-		return test;
+		// 1.Zeile
+		matrix[0] = (float) (Math.pow(ax, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
+		matrix[1] = (float) (ax * ay * (1 - Math.cos(angle)) - az * Math.sin(angle));
+		matrix[2] = (float) (ax * az * (1 - Math.cos(angle)) + ay * Math.sin(angle));
+		matrix[3] = 0;
+		
+		//2. Zeile
+		matrix[4] = (float) (ay * ax * (1 - Math.cos(angle)) + az * Math.sin(angle));
+		matrix[5] = (float) (Math.pow(ay, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
+		matrix[6] = (float) (ay * az * (1 - Math.cos(angle)) - ax * Math.sin(angle));
+		matrix[7] = 0;
+		
+		// 3.Zeile
+		matrix[8] = (float) (az * ax * (1 - Math.cos(angle)) - ay * Math.sin(angle));
+		matrix[9] = (float) (az * ay * (1 - Math.cos(angle)) + ax * Math.sin(angle));
+		matrix[10] = (float) (Math.pow(az, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
+		matrix[11] = 0;
+		
+		//4. Zeile
+		matrix[12] = 0;
+		matrix[13] = 0;
+		matrix[14] = 0;
+		matrix[15] = 1;
+
+		Matrix matrixResult = new MatrixImpl(matrix);
+
+		return new MatrixImpl(new MatrixCore(matrixResult.asArray()),
+				new MatrixCore(matrixResult.transpose().asArray()));
 	}
 
 	@Override
