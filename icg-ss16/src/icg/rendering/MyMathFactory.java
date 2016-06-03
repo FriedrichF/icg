@@ -1,6 +1,9 @@
 package icg.rendering;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
+
+import icg.math.RGBColorImpl;
+import myMath.VectorImpl;
 import ogl.vecmath.*;
 
 public class MyMathFactory {
@@ -31,7 +34,7 @@ public class MyMathFactory {
 	 * @return the created vector
 	 */
 	public static Vector vector(float x, float y, float z){
-		return vecmath.vector(x, y, z);
+		return new VectorImpl(x, y, z);
 	}
 	
 	/**
@@ -42,6 +45,6 @@ public class MyMathFactory {
 	 * @return the created vector
 	 */
 	public static Color color(float r, float g, float b){
-		return vecmath.color(r, g, b);
+		return new RGBColorImpl(r, g, b);
 	}
 }

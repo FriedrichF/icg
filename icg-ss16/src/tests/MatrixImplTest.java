@@ -3,10 +3,10 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import myMath.MatrixImpl;
+import myMath.VectorImpl;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
-import uebung3.MatrixImpl;
-import uebung3.VectorImpl;
 
 /**
  * !!!!!!!!!!!!!!  UNBEDINGT !!!!!!!!!!!!!!!!!!!!
@@ -152,7 +152,7 @@ public class MatrixImplTest {
 		//{{5,2,1,0}, {1,7,8,0}, {9,3,4,0}, {0,0,0,1}}*{4,3,23,1}
 		//https://www.wolframalpha.com/input/?i=%7B%7B5,2,1,0%7D,+%7B1,7,8,0%7D,+%7B9,3,4,0%7D,+%7B0,0,0,1%7D%7D*%7B4,3,23,1%7D
 		Vector res1 = matrix1.transformPoint(vectorPoint1);
-		float[] fWA1 = {49,209,137,1};
+		float[] fWA1 = {49, 209, 137,1};
 		Vector res1WA = new VectorImpl(fWA1);
 		Assert.assertEquals(res1WA, res1);
 		
@@ -173,14 +173,14 @@ public class MatrixImplTest {
 		//{{5,2,1,0}, {1,7,8,0}, {9,3,4,0}, {0,0,0,1}}*{-7,3,3,0}
 		//https://www.wolframalpha.com/input/?i=%7B%7B5,2,1,0%7D,+%7B1,7,8,0%7D,+%7B9,3,4,0%7D,+%7B0,0,0,1%7D%7D*%7B-7,3,3,0%7D
 		Vector res1 = matrix1.transformDirection(vectorDirection1);
-		float[] fWA1 = {-26,38,-42,0};
+		float[] fWA1 = {-26, 38, -42,0};
 		Vector res1WA = new VectorImpl(fWA1);
 		Assert.assertEquals(res1WA, res1);
 		
 		
 		//{{4,3,23,0},{1,0,7,0},{4,5,17,0},{0,0,0,0}}*{4,9,-1,0}
 		//https://www.wolframalpha.com/input/?i=%7B%7B4,3,23,0%7D,%7B1,0,7,0%7D,%7B4,5,17,0%7D,%7B0,0,0,0%7D%7D*%7B4,9,-1,0%7D
-		Vector res2 = matrix4.transformDirection(vectorDirection2);
+		Vector res2 = new VectorImpl(matrix4.transformDirection(vectorDirection2));
 		float[] fWA2 = {20,-3,44,0};
 		Vector res2WA = new VectorImpl(fWA2);
 		Assert.assertEquals(res2WA, res2);

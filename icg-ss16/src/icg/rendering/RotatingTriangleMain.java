@@ -23,7 +23,7 @@ public class RotatingTriangleMain extends JFrame{
 	/**
 	 * the triangle instance to be rendered
 	 */
-	private RotatingTriangleBase toRender = makeCube(0.5f, 0.5f, 0.5f);
+	private RotatingTriangleBase toRender = makePyramide(0.5f, 0.5f, 0.5f);
 
 	/**
 	 * a timer
@@ -136,6 +136,24 @@ public class RotatingTriangleMain extends JFrame{
 		});
 	}
 
+	public RotatingTriangle makePyramide(float cwidth, float cheight, float cdepth) {
+		return new RotatingTriangle(new Vertex[]{
+				new Vertex(MyMathFactory.vector(-cwidth, -cheight, cdepth), MyMathFactory.color(1, 0, 0)), 
+				new Vertex(MyMathFactory.vector( 0, cheight, 0), MyMathFactory.color(0, 1, 0)),
+				new Vertex(MyMathFactory.vector( cwidth,  -cheight, cdepth), MyMathFactory.color(0, 0, 1)),
+				new Vertex(MyMathFactory.vector(cwidth,  -cheight, -cdepth), MyMathFactory.color(1, 0, 1)),
+				new Vertex(MyMathFactory.vector(-cwidth,  -cheight, -cdepth), MyMathFactory.color(1, 0, 1))
+		}, new int[]{
+				//front
+				0,1,2,
+				//right
+				2,1,3,
+				// back
+				3,1,4,
+				// left
+				4,1,0
+		});
+	}
 
 	/**
 	 * render the triangle

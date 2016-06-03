@@ -1,10 +1,9 @@
-package de.mb.uebungen.test;
+package tests;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.mb.uebungen.VectorImpl;
-import de.mb.uebungen.VectorImpl;
+import myMath.VectorImpl;
 import ogl.vecmath.Vector;
 
 public class VectorImplTest {
