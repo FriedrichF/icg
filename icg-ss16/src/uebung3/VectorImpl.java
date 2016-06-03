@@ -1,7 +1,9 @@
 package uebung3;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
+import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
 public class VectorImpl implements Vector {
@@ -23,6 +25,13 @@ public class VectorImpl implements Vector {
 	@Override
 	public float x() {
 		return vector[0];
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (Arrays.equals(this.asArray(), ((Vector) (obj)).asArray()))
+			return true;
+		return false;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package uebung3;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
@@ -9,9 +10,15 @@ import ogl.vecmathimp.VectorImp;
 public class MatrixImpl implements Matrix {
 
 	float[] matrix = new float[16];
+	MatrixCore inverseData;
+	MatrixCore data;
 
 	public MatrixImpl(float[] vals) {
 		setValues(vals);
+	}
+
+	public MatrixImpl(MatrixCore mult, MatrixCore mult2) {
+
 	}
 
 	@Override
@@ -30,16 +37,13 @@ public class MatrixImpl implements Matrix {
 	}
 
 	@Override
-	public Matrix mult(Matrix m) {
-		float[] result = new float[16];
+	public Matrix mult(Matrix that) {
+		return new MatrixImpl(data.mult(((MatrixImpl) that).data), ((MatrixImpl) that).inverseData.mult(inverseData));
+	}
 
-		for (int resultCell = 0; resultCell < result.length; resultCell++) {
-			for (int i = 0; i < 4; i++) {
-				result[resultCell] += get(resultCell, i) * m.get(i, resultCell);
-			}
-		}
-
-		return new MatrixImpl(result);
+	@Override
+	public boolean equals(Object obj) {
+		return equals((Matrix) obj, 0f);
 	}
 
 	public String toString() {
@@ -82,13 +86,13 @@ public class MatrixImpl implements Matrix {
 	@Override
 	public Matrix transpose() {
 		float[] result = new float[16];
-		
-		for(int resultIndex = 0; resultIndex < matrix.length; resultIndex++){
-				result[resultIndex] = matrix[(resultIndex*4)%15];
+
+		for (int resultIndex = 0; resultIndex < matrix.length; resultIndex++) {
+			result[resultIndex] = matrix[(resultIndex * 4) % 15];
 		}
-		
+
 		result[15] = matrix[15];
-		
+
 		return new MatrixImpl(result);
 	}
 
@@ -142,7 +146,8 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public boolean equals(Matrix m, float epsilon) {
-		// TODO Auto-generated method stub
+		if (Arrays.equals(this.asArray(), m.asArray()))
+			return true;
 		return false;
 	}
 

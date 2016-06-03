@@ -6,6 +6,8 @@ package ogl.vecmath;
 
 import java.nio.FloatBuffer;
 
+import uebung3.MatrixCore;
+
 /**
  * A simple 4x4 matrix class using float getValues(). Matrices are non-mutable and
  * can be passed around as getValues(). The matrix is stored in one float array in
