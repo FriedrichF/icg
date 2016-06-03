@@ -76,10 +76,12 @@ public class FactoryImpl implements Factory {
 		matrix[3] = x;
 		matrix[7] = y;
 		matrix[11] = z;
+		
 		float[] matrixInvers = identityMatrix().asArray();
-		matrix[3] = -x;
-		matrix[7] = -y;
-		matrix[11] = -z;
+		matrixInvers[3] = -x;
+		matrixInvers[7] = -y;
+		matrixInvers[11] = -z;
+		
 		return new MatrixImpl(new MatrixCore(matrix), new MatrixCore(matrixInvers));
 	}
 
@@ -134,9 +136,9 @@ public class FactoryImpl implements Factory {
 		matrix[5] = y;
 		matrix[10] = z;
 		float[] matrixInvers = identityMatrix().asArray();
-		matrix[0] = 1 / x;
-		matrix[5] = 1 / y;
-		matrix[10] = 1 / z;
+		matrixInvers[0] = 1 / x;
+		matrixInvers[5] = 1 / y;
+		matrixInvers[10] = 1 / z;
 		return new MatrixImpl(new MatrixCore(matrix), new MatrixCore(matrixInvers));
 	}
 

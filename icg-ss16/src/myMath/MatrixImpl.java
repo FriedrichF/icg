@@ -156,7 +156,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public boolean equals(Matrix m, float epsilon) {
-		if (Arrays.equals(this.asArray(), m.asArray()))
+		if (Arrays.equals(getValues(), m.getValues()))
 			return true;
 		return false;
 	}

@@ -1,10 +1,11 @@
 package icg.rendering;
 
-import static ogl.vecmathimp.FactoryDefault.vecmath;
-
+import icg.math.FactoryImpl;
 import icg.math.RGBColorImpl;
 import myMath.VectorImpl;
-import ogl.vecmath.*;
+import ogl.vecmath.Color;
+import ogl.vecmath.Matrix;
+import ogl.vecmath.Vector;
 
 public class MyMathFactory {
 	/**
@@ -13,7 +14,7 @@ public class MyMathFactory {
 	 * @return a matrix that translates a point by the given vector
 	 */
 	public static Matrix translationMatrix(Vector translation){
-		return vecmath.translationMatrix(translation);
+		return FactoryImpl.vecmath.translationMatrix(translation);
 	}
 	
 	/**
@@ -23,7 +24,7 @@ public class MyMathFactory {
 	 * @return a rotation matrix that represents the rotation defined by the given axis and angle
 	 */
 	public static Matrix rotationMatrix(Vector axis, float angleInDegrees){
-		return vecmath.rotationMatrix(axis, angleInDegrees);
+		return FactoryImpl.vecmath.rotationMatrix(axis, angleInDegrees);
 	}
 	
 	/**

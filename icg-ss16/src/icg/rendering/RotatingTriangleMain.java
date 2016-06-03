@@ -24,7 +24,7 @@ public class RotatingTriangleMain extends JFrame{
 	/**
 	 * the triangle instance to be rendered
 	 */
-	private RotatingTriangleBase toRender = makeCube(0.5f, 0.5f, 0.5f);
+	private RotatingTriangleBase toRender = makePyramide(0.5f, 0.5f, 0.5f);
 
 	/**
 	 * a timer
@@ -71,7 +71,9 @@ public class RotatingTriangleMain extends JFrame{
 					);		
 		
 		// set the rotation axis
-		toRender.setRotationAxis(MyMathFactory.vector(1, 0, -1));
+		toRender.setRotationAxis(MyMathFactory.vector(1, 0, 0));
+
+//		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.scaleMatrix(0.2f, 0.2f, 0.2f)));
 	}
 
 	/**
