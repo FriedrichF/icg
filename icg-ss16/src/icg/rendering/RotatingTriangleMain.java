@@ -71,9 +71,10 @@ public class RotatingTriangleMain extends JFrame{
 					);		
 		
 		// set the rotation axis
-		toRender.setRotationAxis(MyMathFactory.vector(1, 0, 0));
+		toRender.setRotationAxis(MyMathFactory.vector(1, 0, -1));
 
 //		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.scaleMatrix(0.2f, 0.2f, 0.2f)));
+		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.translationMatrix(1f, 0f,0f)));
 	}
 
 	/**

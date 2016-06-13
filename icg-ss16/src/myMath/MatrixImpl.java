@@ -9,17 +9,18 @@ import ogl.vecmathimp.VectorImp;
 
 public class MatrixImpl implements Matrix {
 
-	MatrixCore inverseData, data;
-
-	public void setInverseData(MatrixCore inverseData) {
-		this.inverseData = inverseData;
-	}
+	MatrixCore inverseData, data = new MatrixCore();
 
 	public MatrixImpl(float[] vals) {
 		data = new MatrixCore(vals);
 		inverseData = new MatrixCore(vals);
 	}
 
+	public MatrixImpl(float[] mult, float[] mult2) {
+		data.setMatrix(mult);
+		inverseData.setMatrix(mult2);
+	}
+	
 	public MatrixImpl(MatrixCore mult, MatrixCore mult2) {
 		data = mult;
 		inverseData = mult2;
@@ -42,7 +43,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Matrix mult(Matrix that) {
-		return new MatrixImpl(data.mult(((MatrixImpl) that).data), ((MatrixImpl) that).inverseData.mult(inverseData));
+		return new MatrixImpl(data.mult(that.getValues()), inverseData.mult(that.invertFull().getValues()));
 	}
 
 	@Override
@@ -69,24 +70,24 @@ public class MatrixImpl implements Matrix {
 	@Override
 	public Vector transformPoint(Vector v) {
 		return new VectorImp(
-				data.getMatrix()[0] * v.x() + data.getMatrix()[1] * v.y() + data.getMatrix()[2] * v.z()
-						+ data.getMatrix()[3] * 1.0f,
-				data.getMatrix()[4] * v.x() + data.getMatrix()[5] * v.y() + data.getMatrix()[6] * v.z()
-						+ data.getMatrix()[7] * 1.0f,
-				data.getMatrix()[8] * v.x() + data.getMatrix()[9] * v.y() + data.getMatrix()[10] * v.z()
-						+ data.getMatrix()[11] * 1.0f);
+				data.getMatrix()[0] * v.x() + data.getMatrix()[4] * v.y() + data.getMatrix()[8] * v.z()
+						+ data.getMatrix()[12] * 1.0f,
+				data.getMatrix()[1] * v.x() + data.getMatrix()[5] * v.y() + data.getMatrix()[9] * v.z()
+						+ data.getMatrix()[13] * 1.0f,
+				data.getMatrix()[2] * v.x() + data.getMatrix()[6] * v.y() + data.getMatrix()[10] * v.z()
+						+ data.getMatrix()[14] * 1.0f);
 	}
 
 	@Override
 	public Vector transformDirection(Vector v) {
 
 		return new VectorImp(
-				data.getMatrix()[0] * v.x() + data.getMatrix()[1] * v.y() + data.getMatrix()[2] * v.z()
-						+ data.getMatrix()[3] * 0.0f,
-				data.getMatrix()[4] * v.x() + data.getMatrix()[5] * v.y() + data.getMatrix()[6] * v.z()
-						+ data.getMatrix()[7] * 0.0f,
-				data.getMatrix()[8] * v.x() + data.getMatrix()[9] * v.y() + data.getMatrix()[10] * v.z()
-						+ data.getMatrix()[11] * 0.0f);
+				data.getMatrix()[0] * v.x() + data.getMatrix()[4] * v.y() + data.getMatrix()[8] * v.z()
+						+ data.getMatrix()[12] * 0.0f,
+				data.getMatrix()[1] * v.x() + data.getMatrix()[5] * v.y() + data.getMatrix()[9] * v.z()
+						+ data.getMatrix()[13] * 0.0f,
+				data.getMatrix()[2] * v.x() + data.getMatrix()[6] * v.y() + data.getMatrix()[10] * v.z()
+						+ data.getMatrix()[14] * 0.0f);
 	}
 
 	@Override
@@ -116,7 +117,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Matrix invertFull() {
-		return new MatrixImpl(inverseData.getMatrix());
+		return new MatrixImpl(inverseData, data);
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 package icg.rendering;
-
+import static ogl.vecmathimp.FactoryDefault.vecmath;
 import icg.math.FactoryImpl;
 import icg.math.RGBColorImpl;
 import myMath.VectorImpl;
@@ -14,7 +14,8 @@ public class MyMathFactory {
 	 * @return a matrix that translates a point by the given vector
 	 */
 	public static Matrix translationMatrix(Vector translation){
-		return FactoryImpl.vecmath.translationMatrix(translation);
+		Matrix test = vecmath.translationMatrix(translation);
+		return test;
 	}
 	
 	/**

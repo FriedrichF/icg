@@ -73,14 +73,14 @@ public class FactoryImpl implements Factory {
 	@Override
 	public Matrix translationMatrix(float x, float y, float z) {
 		float[] matrix = identityMatrix().asArray();
-		matrix[3] = x;
-		matrix[7] = y;
-		matrix[11] = z;
+		matrix[12] = x;
+		matrix[13] = y;
+		matrix[14] = z;
 		
 		float[] matrixInvers = identityMatrix().asArray();
-		matrixInvers[3] = -x;
-		matrixInvers[7] = -y;
-		matrixInvers[11] = -z;
+		matrixInvers[12] = -x;
+		matrixInvers[13] = -y;
+		matrixInvers[14] = -z;
 		
 		return new MatrixImpl(new MatrixCore(matrix), new MatrixCore(matrixInvers));
 	}
@@ -96,26 +96,26 @@ public class FactoryImpl implements Factory {
 
 		// 1.Zeile
 		matrix[0] = (float) (Math.pow(ax, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
-		matrix[1] = (float) (ax * ay * (1 - Math.cos(angle)) - az * Math.sin(angle));
-		matrix[2] = (float) (ax * az * (1 - Math.cos(angle)) + ay * Math.sin(angle));
-		matrix[3] = 0;
+		matrix[4] = (float) (ax * ay * (1 - Math.cos(angle)) - az * Math.sin(angle));
+		matrix[8] = (float) (ax * az * (1 - Math.cos(angle)) + ay * Math.sin(angle));
+		matrix[12] = 0;
 		
 		//2. Zeile
-		matrix[4] = (float) (ay * ax * (1 - Math.cos(angle)) + az * Math.sin(angle));
+		matrix[1] = (float) (ay * ax * (1 - Math.cos(angle)) + az * Math.sin(angle));
 		matrix[5] = (float) (Math.pow(ay, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
-		matrix[6] = (float) (ay * az * (1 - Math.cos(angle)) - ax * Math.sin(angle));
-		matrix[7] = 0;
+		matrix[9] = (float) (ay * az * (1 - Math.cos(angle)) - ax * Math.sin(angle));
+		matrix[13] = 0;
 		
 		// 3.Zeile
-		matrix[8] = (float) (az * ax * (1 - Math.cos(angle)) - ay * Math.sin(angle));
-		matrix[9] = (float) (az * ay * (1 - Math.cos(angle)) + ax * Math.sin(angle));
+		matrix[2] = (float) (az * ax * (1 - Math.cos(angle)) - ay * Math.sin(angle));
+		matrix[6] = (float) (az * ay * (1 - Math.cos(angle)) + ax * Math.sin(angle));
 		matrix[10] = (float) (Math.pow(az, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
-		matrix[11] = 0;
+		matrix[14] = 0;
 		
 		//4. Zeile
-		matrix[12] = 0;
-		matrix[13] = 0;
-		matrix[14] = 0;
+		matrix[3] = 0;
+		matrix[7] = 0;
+		matrix[11] = 0;
 		matrix[15] = 1;
 
 		Matrix matrixResult = new MatrixImpl(matrix);
