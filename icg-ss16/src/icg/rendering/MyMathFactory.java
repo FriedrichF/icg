@@ -14,7 +14,7 @@ public class MyMathFactory {
 	 * @return a matrix that translates a point by the given vector
 	 */
 	public static Matrix translationMatrix(Vector translation){
-		Matrix test = vecmath.translationMatrix(translation);
+		Matrix test = FactoryImpl.vecmath.translationMatrix(translation);
 		return test;
 	}
 	

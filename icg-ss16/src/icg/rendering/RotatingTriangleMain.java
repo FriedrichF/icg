@@ -74,7 +74,7 @@ public class RotatingTriangleMain extends JFrame{
 		toRender.setRotationAxis(MyMathFactory.vector(1, 0, -1));
 
 //		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.scaleMatrix(0.2f, 0.2f, 0.2f)));
-		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.translationMatrix(1f, 0f,0f)));
+//		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.translationMatrix(1f, 0f,0f)));
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class RotatingTriangleMain extends JFrame{
 		Matrix currMat = toRender.getTransform();
 
 		// use default implementation (i.e. rotate by 90 degrees per second) if retrieved transform is null
-		Matrix rotationMatrix = FactoryImpl.vecmath.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 20000f);
+		Matrix rotationMatrix = FactoryImpl.vecmath.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f);
 		currMat = currMat.mult(rotationMatrix);
 
 		// apply the transformation to the triangle

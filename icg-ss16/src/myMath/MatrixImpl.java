@@ -20,7 +20,7 @@ public class MatrixImpl implements Matrix {
 		data.setMatrix(mult);
 		inverseData.setMatrix(mult2);
 	}
-	
+
 	public MatrixImpl(MatrixCore mult, MatrixCore mult2) {
 		data = mult;
 		inverseData = mult2;
@@ -53,10 +53,11 @@ public class MatrixImpl implements Matrix {
 
 	public String toString() {
 		String result = "";
-		for (int i = 0; i < data.getMatrix().length; i++) {
-			if (i % 4 == 0)
-				result += "\n";
-			result += data.getMatrix()[i] + "|";
+		for (int row = 0; row < 4; row++) {
+			for (int column = 0; column < 4; column++) {
+				result += data.get(column, row) + "|";
+			}
+			result += "\n";
 		}
 		return result;
 	}

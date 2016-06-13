@@ -67,5 +67,19 @@ public class vcmathTest {
 		float[] test2 = vecmath.translationMatrix(vectorPoint1).asArray();
 		Assert.assertArrayEquals(test1, test2, 0.0f);
 	}
+	
+	@Test
+	public void rotationTest(){
+		float[] test1 = FactoryImpl.vecmath.rotationMatrix(vectorPoint1, 90f).asArray();
+		float[] test2 = vecmath.rotationMatrix(vectorPoint1, 90f).asArray();
+		Assert.assertArrayEquals(test1, test2, 0.0f);
+	}
+	
+	@Test
+	public void scaleTest(){
+		float[] test1 = FactoryImpl.vecmath.scaleMatrix(vectorPoint1).asArray();
+		float[] test2 = vecmath.scaleMatrix(vectorPoint1).asArray();
+		Assert.assertArrayEquals(test1, test2, 0.0f);
+	}
 
 }

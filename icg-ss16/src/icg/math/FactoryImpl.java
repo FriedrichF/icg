@@ -93,23 +93,26 @@ public class FactoryImpl implements Factory {
 	@Override
 	public Matrix rotationMatrix(float ax, float ay, float az, float angle) {
 		float[] matrix = new float[16];
+		
+		double cos = Math.cos(Math.toRadians(angle));
+		double sin = Math.sin(Math.toRadians(angle));
 
 		// 1.Zeile
-		matrix[0] = (float) (Math.pow(ax, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
-		matrix[4] = (float) (ax * ay * (1 - Math.cos(angle)) - az * Math.sin(angle));
-		matrix[8] = (float) (ax * az * (1 - Math.cos(angle)) + ay * Math.sin(angle));
+		matrix[0] = (float) (Math.pow(ax, 2) * (1 - cos) + cos);
+		matrix[4] = (float) (ax * ay * (1 - cos) - az * sin);
+		matrix[8] = (float) (ax * az * (1 - cos) + ay * sin);
 		matrix[12] = 0;
 		
 		//2. Zeile
-		matrix[1] = (float) (ay * ax * (1 - Math.cos(angle)) + az * Math.sin(angle));
-		matrix[5] = (float) (Math.pow(ay, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
-		matrix[9] = (float) (ay * az * (1 - Math.cos(angle)) - ax * Math.sin(angle));
+		matrix[1] = (float) (ay * ax * (1 - cos) + az * sin);
+		matrix[5] = (float) (Math.pow(ay, 2) * (1 - cos) + cos);
+		matrix[9] = (float) (ay * az * (1 - cos) - ax * sin);
 		matrix[13] = 0;
 		
 		// 3.Zeile
-		matrix[2] = (float) (az * ax * (1 - Math.cos(angle)) - ay * Math.sin(angle));
-		matrix[6] = (float) (az * ay * (1 - Math.cos(angle)) + ax * Math.sin(angle));
-		matrix[10] = (float) (Math.pow(az, 2) * (1 - Math.cos(angle)) + Math.cos(angle));
+		matrix[2] = (float) (az * ax * (1 - cos) - ay * sin);
+		matrix[6] = (float) (az * ay * (1 - cos) + ax * sin);
+		matrix[10] = (float) (Math.pow(az, 2) * (1 - cos) + cos);
 		matrix[14] = 0;
 		
 		//4. Zeile
