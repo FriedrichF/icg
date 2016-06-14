@@ -75,6 +75,7 @@ public class RotatingTriangleMain extends JFrame{
 
 //		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.scaleMatrix(0.2f, 0.2f, 0.2f)));
 //		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.translationMatrix(1f, 0f,0f)));
+//		toRender.setTransform(toRender.getTransform().mult(FactoryImpl.vecmath.rotationMatrix(0f, 0f,1f, 90)));
 	}
 
 	/**

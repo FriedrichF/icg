@@ -22,8 +22,13 @@ public abstract class Knoten {
 		return transformMatrix;
 	}
 	
+	public void setTransformMatrix(Matrix matrix){
+		transformMatrix = matrix;
+	}
+	
 	public abstract List<Knoten> getChilds();
 	public abstract void setChild(Knoten child);
 	public abstract void draw(Matrix m);
+	public abstract void accept(Traverser t);
 
 }

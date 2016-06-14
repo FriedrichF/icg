@@ -28,7 +28,12 @@ public class Geometrieknoten extends Knoten {
 
 	@Override
 	public void draw(Matrix m) {
-		System.out.println(m.mult(getTransformMatrix()).transformPoint(vector));
+		System.out.println(getTransformMatrix().mult(m).transformPoint(vector));
+	}
+	
+	@Override
+	public void accept(Traverser t) {
+		t.visit(this);
 	}
 
 }

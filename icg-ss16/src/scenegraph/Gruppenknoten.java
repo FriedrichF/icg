@@ -26,9 +26,13 @@ public class Gruppenknoten extends Knoten {
 	public void draw(Matrix m) {
 		System.out.println(this);
 		for (Knoten child : childs) {
-			child.draw(m.mult(getTransformMatrix()));
+			child.draw(getTransformMatrix().mult(m));
 		}
-		
+	}
+	
+	@Override
+	public void accept(Traverser t) {
+		t.visit(this);
 	}
 
 }
