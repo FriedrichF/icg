@@ -158,8 +158,10 @@ public class RotatingCube implements App {
 
 	// select correct shader
 	private String[] getVsSource() {
-		if (OpenGLApp.getGLMajor() >= 3)
-			return concatArrays(getGLSLVersionString(), vsHeader30, vsSource); 
+		if (OpenGLApp.getGLMajor() >= 3){
+			String[] ret = concatArrays(getGLSLVersionString(), vsHeader30, vsSource);
+			return ret;
+		}
 		else 
 			return concatArrays(vsHeader21, vsSource);
 	}

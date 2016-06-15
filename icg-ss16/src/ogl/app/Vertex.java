@@ -7,9 +7,11 @@ import ogl.vecmath.Vector;
 public class Vertex {
 	public final Vector position;
 	public final Color color;
+	public final Vector normal;
 
-	public Vertex(Vector p, Color c) {
+	public Vertex(Vector p, Color c, Vector normal) {
 		position = p;
 		color = c;
+		this.normal = normal;
 	}
 }
