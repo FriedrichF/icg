@@ -105,7 +105,7 @@ public class RotatingTriangleMain extends JFrame{
 		Matrix currMat = toRender.getTransform();
 
 		// use default implementation (i.e. rotate by 90 degrees per second) if retrieved transform is null
-		Matrix rotationMatrix = FactoryImpl.vecmath.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f);
+		Matrix rotationMatrix = MyMathFactory.rotationMatrix( toRender.getRotationAxis().normalize(), 90f * elapsedMilliseconds / 1000f);
 		currMat = currMat.mult(rotationMatrix);
 
 		// apply the transformation to the triangle

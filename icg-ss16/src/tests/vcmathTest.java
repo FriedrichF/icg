@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class vcmathTest {
 	
-	private float[] valuesVec1 = {4,3,23,1};
+	private float[] valuesVec1 = {0,1,1,1};
 	Vector vectorPoint1 		= new VectorImpl(valuesVec1);
 	//{{5,2,1,0}, {1,7,8,0}, {9,3,4,0}, {0,0,0,1}}
 		private float[] values1 = {	5,2,1,0,
@@ -70,9 +70,9 @@ public class vcmathTest {
 	
 	@Test
 	public void rotationTest(){
-		float[] test1 = FactoryImpl.vecmath.rotationMatrix(vectorPoint1, 90f).asArray();
-		float[] test2 = vecmath.rotationMatrix(vectorPoint1, 90f).asArray();
-		Assert.assertArrayEquals(test1, test2, 0.0f);
+		float[] test1 = FactoryImpl.vecmath.rotationMatrix(vectorPoint1, 91f).asArray();
+		float[] test2 = vecmath.rotationMatrix(vectorPoint1, 91f).asArray();
+		Assert.assertArrayEquals(test1, test2, 0.1f);
 	}
 	
 	@Test
