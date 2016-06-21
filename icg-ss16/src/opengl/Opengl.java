@@ -78,14 +78,14 @@ public class Opengl implements App {
 
 		int vs = glCreateShader(GL_VERTEX_SHADER);
 
-		glShaderSource(vs, readFile("E:/GIT/ICG/icg/icg-ss16/src/opengl/vertexShader.c"));
+		glShaderSource(vs, readFile("shaderCode/vertexShader.c"));
 		glCompileShader(vs);
 		Util.checkCompilation(vs);
 
 		// Create and compile the fragment shader.
 		int fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-		glShaderSource(fs, readFile("E:/GIT/ICG/icg/icg-ss16/src/opengl/fragmentShader.c"));
+		glShaderSource(fs, readFile("shaderCode/fragmentShader.c"));
 		glCompileShader(fs);
 		Util.checkCompilation(fs);
 
