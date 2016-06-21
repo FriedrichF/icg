@@ -50,7 +50,7 @@ public class Opengl implements App {
 			String result = "";
 
 			while ((str = vertexBufferReader.readLine()) != null)
-				result += str+"\n";
+				result += str + "\n";
 
 			vertexBufferReader.close();
 			return result;
@@ -242,8 +242,11 @@ public class Opengl implements App {
 			vec(-w2, -h2, -d2), vec(-w2, h2, -d2), vec(w2, h2, -d2) };
 
 	// The colors of the cube vertices.
-	private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1, 0), col(1, 0, 1), col(0, 0, 1),
-			col(0, 1, 1), col(1, 1, 1) };
+	// private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1,
+	// 0), col(1, 0, 1), col(0, 0, 1),
+	// col(0, 1, 1), col(1, 1, 1) };
+	private Color[] c = { col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0),
+			col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0) };
 
 	private Vector[] n = { vec(0f, 0f, 0.5f), vec(0f, 0f, -0.5f), vec(0.5f, 0f, 0f), vec(0f, 0.5f, 0f),
 			vec(-0.5f, 0f, 0f), vec(0f, -0.5f, 0f) };

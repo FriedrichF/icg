@@ -16,7 +16,7 @@ void main() {
 	fcolor = color;
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix
 			* vec4(vertex, 1.0);
-	vec4 vertPos4 = modelMatrix * vec4(vertex, 1.0);
+	vec4 vertPos4 = viewMatrix * modelMatrix * vec4(vertex, 1.0);
 	vertPos = vec3(vertPos4) / vertPos4.w;
 	normalInterp = vec3(normalMatrix * vec4(normal, 0.0));
 }
