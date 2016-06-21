@@ -43,6 +43,24 @@ public class Opengl implements App {
 		new OpenGLApp("Own Cube", new Opengl()).start();
 	}
 
+	private String readFile(String path) {
+		try {
+			BufferedReader vertexBufferReader = new BufferedReader(new FileReader(path));
+			String str;
+			String result = "";
+
+			while ((str = vertexBufferReader.readLine()) != null)
+				result += str+"\n";
+
+			vertexBufferReader.close();
+			return result;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	@Override
 	public void init() {
 		// Set background color to black.
@@ -60,43 +78,14 @@ public class Opengl implements App {
 
 		int vs = glCreateShader(GL_VERTEX_SHADER);
 
-		List<String> vertexOutput = new LinkedList<String>();
-		List<String> fragmentOutput = new LinkedList<String>();
-
-		try {
-			BufferedReader vertexBufferReader = new BufferedReader(
-					new FileReader("E:/GIT/ICG/icg/icg-ss16/src/opengl/vertexShader.txt"));
-			String str;
-
-			while ((str = vertexBufferReader.readLine()) != null)
-				vertexOutput.add(str);
-
-			vertexBufferReader.close();
-
-			BufferedReader fragmentBufferReader = new BufferedReader(
-					new FileReader("E:/GIT/ICG/icg/icg-ss16/src/opengl/fragmentShader.txt"));
-
-			while ((str = fragmentBufferReader.readLine()) != null)
-				fragmentOutput.add(str);
-
-			fragmentBufferReader.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		String[] vertexArray = vertexOutput.toArray(new String[vertexOutput.size()]);
-		vertexArray[0] = vertexArray[0] + "\n";
-		glShaderSource(vs, vertexArray);
+		glShaderSource(vs, readFile("E:/GIT/ICG/icg/icg-ss16/src/opengl/vertexShader.c"));
 		glCompileShader(vs);
 		Util.checkCompilation(vs);
 
 		// Create and compile the fragment shader.
 		int fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-		String[] fragmentArray = fragmentOutput.toArray(new String[fragmentOutput.size()]);
-		fragmentArray[0] = fragmentArray[0] + "\n";
-		glShaderSource(fs, fragmentArray);
+		glShaderSource(fs, readFile("E:/GIT/ICG/icg/icg-ss16/src/opengl/fragmentShader.c"));
 		glCompileShader(fs);
 		Util.checkCompilation(fs);
 
