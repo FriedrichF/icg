@@ -1,7 +1,6 @@
 package opengl;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
@@ -23,46 +22,41 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
-import ogl.app.App;
-import ogl.app.Input;
 import ogl.app.MatrixUniform;
-import ogl.app.OpenGLApp;
 import ogl.app.Util;
 import ogl.app.Vertex;
 import ogl.app.VertexArrayObject;
-import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
-import ogl.vecmath.Vector;
 
-public class Opengl implements App {
+public class Shader {
 
-	static public void main(String[] args) {
-		new OpenGLApp("Own Cube", new Opengl()).start();
+	// The shader program.
+	private int program;
+
+	// Initialize the rotation angle of the cube.
+	private float angle = 0;
+
+	public float getAngle() {
+		return angle;
 	}
 
-	private String readFile(String path) {
-		try {
-			BufferedReader vertexBufferReader = new BufferedReader(new FileReader(path));
-			String str;
-			String result = "";
-
-			while ((str = vertexBufferReader.readLine()) != null)
-				result += str + "\n";
-
-			vertexBufferReader.close();
-			return result;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public void setAngle(float angle) {
+		this.angle = angle;
 	}
 
-	@Override
-	public void init() {
+	// The location of the "mvpMatrix" uniform variable.
+	private MatrixUniform modelMatrixUniform;
+	private MatrixUniform viewMatrixUniform;
+	private MatrixUniform projectionMatrixUniform;
+	private MatrixUniform normalMatrixUniform;
+
+	// the Vertex Array Object which will represent the cube
+	private VertexArrayObject cube = null;
+
+	public Shader(VertexArrayObject cube, Vertex[] cubeVertices) {
+		this.cube = cube;
+		
 		// Set background color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -71,7 +65,7 @@ public class Opengl implements App {
 
 		// create Vertex Array Object (VAO) from the cube's vertices
 		try {
-			cube = new VertexArrayObject(cubeVertices);
+			this.cube = new VertexArrayObject(cubeVertices);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,25 +110,6 @@ public class Opengl implements App {
 		normalMatrixUniform = new MatrixUniform(program, "normalMatrix");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cg2.cube.App#simulate(float, cg2.cube.Input)
-	 */
-	@Override
-	public void simulate(float elapsed, Input input) {
-		// Pressing key 'r' toggles the cube animation.
-		if (input.isKeyToggled(GLFW_KEY_R))
-			// Increase the angle with a speed of 90 degrees per second.
-			angle += 90 * elapsed;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cg2.cube.App#display(int, int, javax.media.opengl.GL2ES2)
-	 */
-	@Override
 	public void display(int width, int height) {
 		// Adjust the the viewport to the actual window size. This makes the
 		// rendered image fill the entire window.
@@ -188,95 +163,21 @@ public class Opengl implements App {
 			cube.cleanUp();
 	}
 
-	/************************
-	 * Variable definitions *
-	 ************************/
+	private String readFile(String path) {
+		try {
+			BufferedReader vertexBufferReader = new BufferedReader(new FileReader(path));
+			String str;
+			String result = "";
 
-	// the Vertex Array Object which will represent the cube
-	private VertexArrayObject cube = null;
+			while ((str = vertexBufferReader.readLine()) != null)
+				result += str + "\n";
 
-	// The shader program.
-	private int program;
+			vertexBufferReader.close();
+			return result;
 
-	// The location of the "mvpMatrix" uniform variable.
-	private MatrixUniform modelMatrixUniform;
-	private MatrixUniform viewMatrixUniform;
-	private MatrixUniform projectionMatrixUniform;
-	private MatrixUniform normalMatrixUniform;
-
-	// Width, depth and height of the cube divided by 2.
-	float w2 = 0.5f;
-	float h2 = 0.5f;
-	float d2 = 0.5f;
-
-	// Make construction of vertices easy on the eyes.
-	private Vertex v(Vector p, Color c, Vector n) {
-		return new Vertex(p, c, n);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-
-	// Make construction of vectors easy on the eyes.
-	private Vector vec(float x, float y, float z) {
-		return vecmath.vector(x, y, z);
-	}
-
-	// Make construction of colors easy on the eyes.
-	private Color col(float r, float g, float b) {
-		return vecmath.color(r, g, b);
-	}
-
-	//
-	// 6 ------- 7
-	// / | / |
-	// 3 ------- 2 |
-	// | | | |
-	// | 5 -----|- 4
-	// | / | /
-	// 0 ------- 1
-	//
-
-	// Initialize the rotation angle of the cube.
-	private float angle = 0;
-
-	// The positions of the cube vertices.
-	private Vector[] p = { vec(-w2, -h2, d2), vec(w2, -h2, d2), vec(w2, h2, d2), vec(-w2, h2, d2), vec(w2, -h2, -d2),
-			vec(-w2, -h2, -d2), vec(-w2, h2, -d2), vec(w2, h2, -d2) };
-
-	// The colors of the cube vertices.
-	// private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1,
-	// 0), col(1, 0, 1), col(0, 0, 1),
-	// col(0, 1, 1), col(1, 1, 1) };
-	private Color[] c = { col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0),
-			col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0) };
-
-	private Vector[] n = { vec(0f, 0f, 0.5f), vec(0f, 0f, -0.5f), vec(0.5f, 0f, 0f), vec(0f, 0.5f, 0f),
-			vec(-0.5f, 0f, 0f), vec(0f, -0.5f, 0f) };
-
-	// Vertices combine position and color information. Every four vertices
-	// define
-	// one side of the cube.
-	private Vertex[] cubeVertices = {
-			// front 1
-			v(p[0], c[0], n[0]), v(p[1], c[1], n[0]), v(p[2], c[2], n[0]),
-			// front 2
-			v(p[2], c[2], n[0]), v(p[3], c[3], n[0]), v(p[0], c[0], n[0]),
-			// back 1
-			v(p[4], c[4], n[1]), v(p[5], c[5], n[1]), v(p[6], c[6], n[1]),
-			// back 2
-			v(p[6], c[6], n[1]), v(p[7], c[7], n[1]), v(p[4], c[4], n[1]),
-			// right 1
-			v(p[1], c[1], n[2]), v(p[4], c[4], n[2]), v(p[7], c[7], n[2]),
-			// right 2
-			v(p[7], c[7], n[2]), v(p[2], c[2], n[2]), v(p[1], c[1], n[2]),
-			// top 1
-			v(p[3], c[3], n[3]), v(p[2], c[2], n[3]), v(p[7], c[7], n[3]),
-			// top 2
-			v(p[7], c[7], n[3]), v(p[6], c[6], n[3]), v(p[3], c[3], n[3]),
-			// left 1
-			v(p[5], c[5], n[4]), v(p[0], c[0], n[4]), v(p[3], c[3], n[4]),
-			// left 2
-			v(p[3], c[3], n[4]), v(p[6], c[6], n[4]), v(p[5], c[5], n[4]),
-			// bottom 1
-			v(p[5], c[5], n[5]), v(p[4], c[4], n[5]), v(p[1], c[1], n[5]),
-			// bottom 2
-			v(p[1], c[1], n[5]), v(p[0], c[0], n[5]), v(p[5], c[5], n[5]) };
 }

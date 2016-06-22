@@ -2,7 +2,6 @@ package scenegraph;
 
 import icg.math.FactoryImpl;
 import ogl.vecmathimp.VectorImp;
-import static ogl.vecmathimp.FactoryDefault.vecmath;
 
 public class SceneTester {
 
