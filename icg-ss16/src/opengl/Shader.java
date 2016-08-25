@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import icg.math.FactoryImpl;
 import ogl.app.MatrixUniform;
 import ogl.app.Util;
 import ogl.app.Vertex;
@@ -33,6 +32,8 @@ import ogl.app.VertexArrayObject;
 import ogl.vecmath.Matrix;
 
 public class Shader {
+
+	private static Shader instance = null;
 
 	// The shader program.
 	private int program;
@@ -56,6 +57,7 @@ public class Shader {
 
 	// the Vertex Array Object which will represent the cube
 	private List<VertexArrayObject> vertexObjects = new ArrayList<VertexArrayObject>();
+	private List<Matrix[]> matrixArray = new ArrayList<Matrix[]>();
 
 	public void addVertexArrayObject(Vertex[] vertices) {
 		// create Vertex Array Object (VAO) from the cube's vertices
@@ -65,8 +67,19 @@ public class Shader {
 			e.printStackTrace();
 		}
 	}
+	
+	public void addMatrices(Matrix modelMatrix, Matrix normalMatrix){
+		Matrix[] mArray = {modelMatrix, normalMatrix};
+		matrixArray.add(mArray);
+	}
 
-	public Shader() {
+	public static Shader getInstance() {
+		if (instance == null)
+			instance = new Shader();
+		return instance;
+	}
+
+	private Shader() {
 		// Set background color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -132,18 +145,11 @@ public class Shader {
 		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f), vecmath.vector(0f, 0f, 0f),
 				vecmath.vector(0f, 1f, 0f));
 
-		int i = 0;
-		for (VertexArrayObject vertexArrayObject : vertexObjects) {
-			Matrix modelMatrix = null;
-			if (i == 0) {
-				// The modeling transformation. Object space to world space.
-				modelMatrix = vecmath.rotationMatrix(vecmath.vector(1, 1, 1), angle);
-			} else {
-				modelMatrix = vecmath.rotationMatrix(vecmath.vector(1, 1, 1), -angle);
-			}
-			i++;
+		for (int i = 0; i < vertexObjects.size(); i++) {
+			// The modeling transformation. Object space to world space.
+			Matrix modelMatrix = matrixArray.get(i)[0];
 
-			Matrix normalMatrix = modelMatrix.invertFull().transpose();
+			Matrix normalMatrix = matrixArray.get(i)[1];
 
 			// Activate the shader program and set the transformation matrices
 			// to
@@ -156,13 +162,13 @@ public class Shader {
 			normalMatrixUniform.set(normalMatrix);
 
 			// bind the cube's VAO
-			vertexArrayObject.bind();
+			vertexObjects.get(i).bind();
 
 			// draw the cube
-			vertexArrayObject.draw();
+			vertexObjects.get(i).draw();
 
 			// unbind the cube's VAO
-			vertexArrayObject.unbind();
+			vertexObjects.get(i).unbind();
 		}
 	}
 

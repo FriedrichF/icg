@@ -25,7 +25,7 @@ public class RotatingCube implements App {
 
 	@Override
 	public void init() {
-		shader = new Shader();
+		shader = Shader.getInstance();
 		shader.addVertexArrayObject(cubeVertices);
 		shader.addVertexArrayObject(cubeVertices2);
 	}
@@ -59,7 +59,7 @@ public class RotatingCube implements App {
 	 * @see ogl.app.App#cleanUp()
 	 */
 	public void cleanUp() {
-		shader.cleanUp();
+		Shader.getInstance().cleanUp();
 	}
 
 	/************************

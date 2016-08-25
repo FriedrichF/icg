@@ -2,16 +2,16 @@ package scenegraph;
 
 import java.util.List;
 
+import ogl.app.Vertex;
 import ogl.vecmath.Matrix;
-import ogl.vecmath.Vector;
 
 public class Geometrieknoten extends Knoten {
 
-	Vector vector;
+	Vertex[] vertices;
 	
-	public Geometrieknoten(String name, Matrix matrix, Vector vector) {
+	public Geometrieknoten(String name, Matrix matrix, Vertex[] vertices) {
 		super(name, matrix);
-		this.vector = vector;
+		this.vertices = vertices;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class Geometrieknoten extends Knoten {
 
 	@Override
 	public void draw(Matrix m) {
-		System.out.println(getTransformMatrix().mult(m).transformPoint(vector));
+		
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package scenegraph;
 import java.util.Stack;
 
 import ogl.vecmath.Matrix;
+import opengl.Shader;
 
 public class Traverser {
 	Stack<Matrix> matrixStack = new Stack<Matrix>();
@@ -26,7 +27,10 @@ public class Traverser {
 		else
 			matrixStack.push(matrixStack.peek().mult(k.getTransformMatrix()));
 		
-		System.out.println(matrixStack.peek().transformPoint(k.vector));
-		matrixStack.pop();
+		Matrix topMatrix = matrixStack.pop();
+		
+		Shader.getInstance().addVertexArrayObject(k.vertices);
+		Shader.getInstance().addMatrices(topMatrix, topMatrix.invertFull());
+		
 	}
 }

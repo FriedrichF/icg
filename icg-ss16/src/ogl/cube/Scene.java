@@ -10,6 +10,10 @@ import ogl.app.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Vector;
 import opengl.Shader;
+import scenegraph.Geometrieknoten;
+import scenegraph.Gruppenknoten;
+import scenegraph.Knoten;
+import scenegraph.Traverser;
 
 public class Scene implements App {
 	static public void main(String[] args) {
@@ -18,9 +22,17 @@ public class Scene implements App {
 
 	@Override
 	public void init() {
-		shader = new Shader();
-		shader.addVertexArrayObject(cubeVertices);
-		shader.addVertexArrayObject(cubeVertices2);
+		shader = Shader.getInstance();
+		Knoten knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, -1, 0), cubeVertices);
+		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0.5f, 1, 0), cubeVertices);
+		
+		knotenRoot.setChild(knotenCube);
+		knotenRoot.setChild(knotenCube2);
+		
+		Traverser t = new Traverser();
+		
+		knotenRoot.accept(t);
 	}
 
 	/*
@@ -52,7 +64,7 @@ public class Scene implements App {
 	 * @see ogl.app.App#cleanUp()
 	 */
 	public void cleanUp() {
-		shader.cleanUp();
+		Shader.getInstance().cleanUp();
 	}
 
 	/************************
