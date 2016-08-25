@@ -1,11 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Henrik Tramberend, Marc Latoschik.
- * All rights reserved.
- *******************************************************************************/
 package ogl.cube;
 
-//Select the factory we want to use.
-import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
 import icg.math.FactoryImpl;
@@ -17,10 +11,9 @@ import ogl.vecmath.Color;
 import ogl.vecmath.Vector;
 import opengl.Shader;
 
-// A simple but complete OpenGL application.
-public class RotatingCube implements App {
+public class Scene implements App {
 	static public void main(String[] args) {
-		new OpenGLApp("Rotating Cube", new RotatingCube()).start();
+		new OpenGLApp("Scene", new Scene()).start();
 	}
 
 	@Override

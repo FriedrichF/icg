@@ -2,6 +2,7 @@ package icg.math;
 
 import myMath.MatrixCore;
 import myMath.MatrixImpl;
+import myMath.VectorImpl;
 import ogl.vecmath.Color;
 import ogl.vecmath.Factory;
 import ogl.vecmath.Matrix;
@@ -11,32 +12,27 @@ public class FactoryImpl implements Factory {
 
 	@Override
 	public Vector vector(float nx, float ny, float nz) {
-		// TODO Auto-generated method stub
-		return null;
+		return new VectorImpl(nx, ny, nz);
 	}
 
 	@Override
 	public Vector xAxis() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("xAxis");
 	}
 
 	@Override
 	public Vector yAxis() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("yAxis");
 	}
 
 	@Override
 	public Vector zAxis() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("zAxis");
 	}
 
 	@Override
 	public int vectorSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 3;
 	}
 
 	@Override
@@ -49,20 +45,17 @@ public class FactoryImpl implements Factory {
 	@Override
 	public Matrix matrix(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13,
 			float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("matrix floats");
 	}
 
 	@Override
 	public Matrix matrix(float[] elements) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("matrix float array");
 	}
 
 	@Override
 	public Matrix matrix(Vector b0, Vector b1, Vector b2) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("matrix Vector");
 	}
 
 	@Override
@@ -147,20 +140,17 @@ public class FactoryImpl implements Factory {
 
 	@Override
 	public Matrix lookatMatrix(Vector eye, Vector center, Vector up) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("lookatMatrix");
 	}
 
 	@Override
 	public Matrix frustumMatrix(float left, float right, float bottom, float top, float zNear, float zFar) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("frustumMatrix");
 	}
 
 	@Override
 	public Matrix perspectiveMatrix(float fovy, float aspect, float zNear, float zFar) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("perspectiveMatrix");
 	}
 
 	@Override
@@ -172,8 +162,7 @@ public class FactoryImpl implements Factory {
 
 	@Override
 	public int colorSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 3;
 	}
 
 }

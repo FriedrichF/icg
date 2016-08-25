@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
+import icg.math.FactoryImpl;
+
 //Auxiliary class to represent a Vertex Array Object (VAO)
 public class VertexArrayObject {
 	// The attribute indices for the vertex data.
@@ -69,9 +71,9 @@ public class VertexArrayObject {
 		// Compile vertex data into a Java Buffer data structures that can be
 		// passed to the OpenGL API efficiently.
 		// create buffers
-		FloatBuffer positionData = BufferUtils.createFloatBuffer(numberOfVertices * vecmath.vectorSize());
-		FloatBuffer colorData = BufferUtils.createFloatBuffer(numberOfVertices * vecmath.colorSize());
-		FloatBuffer normalData = BufferUtils.createFloatBuffer(numberOfVertices * vecmath.vectorSize());
+		FloatBuffer positionData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.vectorSize());
+		FloatBuffer colorData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.colorSize());
+		FloatBuffer normalData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.vectorSize());
 
 		// fill buffers
 		for (Vertex v : vertices) {

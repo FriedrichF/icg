@@ -100,14 +100,12 @@ public class VectorImpl implements Vector {
 
 	@Override
 	public FloatBuffer asBuffer() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("Vector asBuffer");
 	}
 
 	@Override
 	public void fillBuffer(FloatBuffer buf) {
-		// TODO Auto-generated method stub
-
+		throw new IllegalArgumentException(" Vector fillBuffer");
 	}
 
 	@Override

@@ -80,8 +80,8 @@ public class RGBColorImpl implements Color {
 
 	@Override
 	public float[] asArray() {
-		// TODO Auto-generated method stub
-		return null;
+		float[] array = {r, g, b};
+		return array;
 	}
 
 	@Override

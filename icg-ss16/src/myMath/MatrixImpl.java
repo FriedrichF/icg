@@ -64,8 +64,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Matrix multSlow(Matrix m) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("multSlow");
 	}
 
 	@Override
@@ -93,8 +92,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Vector transformNormal(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("transformNormal");
 	}
 
 	@Override
@@ -112,8 +110,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Matrix invertRigid() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("invertRigid");
 	}
 
 	@Override
@@ -128,32 +125,27 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public FloatBuffer asBuffer() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("asBuffer");
 	}
 
 	@Override
 	public void fillBuffer(FloatBuffer buf) {
-		// TODO Auto-generated method stub
-
+		throw new IllegalArgumentException("fillBuffer");
 	}
 
 	@Override
 	public Matrix getRotation() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("getRotation");
 	}
 
 	@Override
 	public Matrix getTranslation() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("getTranslation");
 	}
 
 	@Override
 	public Vector getPosition() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalArgumentException("getPosition");
 	}
 
 	@Override

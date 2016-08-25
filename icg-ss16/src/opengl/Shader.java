@@ -22,7 +22,10 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import icg.math.FactoryImpl;
 import ogl.app.MatrixUniform;
 import ogl.app.Util;
 import ogl.app.Vertex;
@@ -52,23 +55,23 @@ public class Shader {
 	private MatrixUniform normalMatrixUniform;
 
 	// the Vertex Array Object which will represent the cube
-	private VertexArrayObject cube = null;
+	private List<VertexArrayObject> vertexObjects = new ArrayList<VertexArrayObject>();
 
-	public Shader(VertexArrayObject cube, Vertex[] cubeVertices) {
-		this.cube = cube;
-		
+	public void addVertexArrayObject(Vertex[] vertices) {
+		// create Vertex Array Object (VAO) from the cube's vertices
+		try {
+			this.vertexObjects.add(new VertexArrayObject(vertices));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Shader() {
 		// Set background color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		// Enable depth testing.
 		glEnable(GL_DEPTH_TEST);
-
-		// create Vertex Array Object (VAO) from the cube's vertices
-		try {
-			this.cube = new VertexArrayObject(cubeVertices);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		int vs = glCreateShader(GL_VERTEX_SHADER);
 
@@ -129,28 +132,38 @@ public class Shader {
 		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f), vecmath.vector(0f, 0f, 0f),
 				vecmath.vector(0f, 1f, 0f));
 
-		// The modeling transformation. Object space to world space.
-		Matrix modelMatrix = vecmath.rotationMatrix(vecmath.vector(1, 1, 1), angle);
+		int i = 0;
+		for (VertexArrayObject vertexArrayObject : vertexObjects) {
+			Matrix modelMatrix = null;
+			if (i == 0) {
+				// The modeling transformation. Object space to world space.
+				modelMatrix = vecmath.rotationMatrix(vecmath.vector(1, 1, 1), angle);
+			} else {
+				modelMatrix = vecmath.rotationMatrix(vecmath.vector(1, 1, 1), -angle);
+			}
+			i++;
 
-		Matrix normalMatrix = modelMatrix.invertFull().transpose();
+			Matrix normalMatrix = modelMatrix.invertFull().transpose();
 
-		// Activate the shader program and set the transformation matrices to
-		// the
-		// uniform variables.
-		glUseProgram(program);
-		modelMatrixUniform.set(modelMatrix);
-		viewMatrixUniform.set(viewMatrix);
-		projectionMatrixUniform.set(projectionMatrix);
-		normalMatrixUniform.set(normalMatrix);
+			// Activate the shader program and set the transformation matrices
+			// to
+			// the
+			// uniform variables.
+			glUseProgram(program);
+			modelMatrixUniform.set(modelMatrix);
+			viewMatrixUniform.set(viewMatrix);
+			projectionMatrixUniform.set(projectionMatrix);
+			normalMatrixUniform.set(normalMatrix);
 
-		// bind the cube's VAO
-		cube.bind();
+			// bind the cube's VAO
+			vertexArrayObject.bind();
 
-		// draw the cube
-		cube.draw();
+			// draw the cube
+			vertexArrayObject.draw();
 
-		// unbind the cube's VAO
-		cube.unbind();
+			// unbind the cube's VAO
+			vertexArrayObject.unbind();
+		}
 	}
 
 	/*
@@ -159,8 +172,11 @@ public class Shader {
 	 * @see ogl.app.App#cleanUp()
 	 */
 	public void cleanUp() {
-		if (cube != null)
-			cube.cleanUp();
+		for (VertexArrayObject vertexArrayObject : vertexObjects) {
+			if (vertexArrayObject != null)
+				vertexArrayObject.cleanUp();
+		}
+
 	}
 
 	private String readFile(String path) {
