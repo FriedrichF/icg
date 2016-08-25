@@ -23,12 +23,14 @@ public class Scene implements App {
 	@Override
 	public void init() {
 		shader = Shader.getInstance();
-		Knoten knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, -1, 0), cubeVertices);
-		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0.5f, 1, 0), cubeVertices);
+		Knoten knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(1, 0, 0));
+		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 1, -1.5f));
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
+		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
 		
 		knotenRoot.setChild(knotenCube);
-		knotenRoot.setChild(knotenCube2);
+		knotenRoot.setChild(knotenA);
+		knotenA.setChild(knotenCube2);
 		
 		Traverser t = new Traverser();
 		

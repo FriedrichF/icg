@@ -8,10 +8,8 @@ public class SceneTester {
 	public static void main(String[] args) {
 		Knoten knotenT = new Gruppenknoten("T", FactoryImpl.vecmath.translationMatrix(1, 2, 3));
 		Knoten knotenR = new Gruppenknoten("R", FactoryImpl.vecmath.translationMatrix(0, 0, 1));
-		Knoten knotenS = new Geometrieknoten("S", FactoryImpl.vecmath.scaleMatrix(1, 1, 1), new VectorImp(0, 0, 1));
 		
 		knotenT.setChild(knotenR);
-		knotenR.setChild(knotenS);
 		
 //		knotenT.draw(FactoryImpl.vecmath.identityMatrix());
 		
