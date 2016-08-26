@@ -39,8 +39,10 @@ public class Scene implements App {
 		knotenRoot.setChild(knotenA);
 		knotenA.setChild(knotenCube2);
 
-		Entity rotor = new Rotor("Rotation", knotenRoot, vec(0, 1, 1), 300);
+		Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
+		Entity rotor2 = new Rotor("Rotation", knotenRoot, vec(0, 1, 0), 90);
 		entities.add(rotor);
+		entities.add(rotor2);
 
 		knotenRoot.accept(t);
 	}
