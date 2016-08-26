@@ -1,7 +1,5 @@
 package scenegraph;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
-
 import icg.math.FactoryImpl;
 import ogl.app.Input;
 import ogl.vecmath.Vector;
@@ -35,7 +33,6 @@ public class Rotor extends Entity {
 
 	@Override
 	public void simulate(float elapsed, Input input) {
-		Knoten test = this.getKnoten();
 		this.getKnoten().setTransformMatrix(this.getKnoten().getTransformMatrix()
 				.mult(FactoryImpl.vecmath.rotationMatrix(rotateAxis, speed * elapsed)));
 	}

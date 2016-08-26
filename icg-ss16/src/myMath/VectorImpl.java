@@ -76,7 +76,8 @@ public class VectorImpl implements Vector {
 
 	@Override
 	public Vector normalize() {
-		return new VectorImpl(x() / length(), y() / length(), z() / length());
+		float length = length();
+		return new VectorImpl(x() / length, y() / length, z() / length);
 	}
 
 	public float quadriereVector() {

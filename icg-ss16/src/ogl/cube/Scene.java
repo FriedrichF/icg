@@ -32,8 +32,8 @@ public class Scene implements App {
 		shader = Shader.getInstance();
 		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 1, -1.5f));
-		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
-		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.identityMatrix(), cubeVertices);
+		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.identityMatrix(), cubeVertices);
 
 		knotenRoot.setChild(knotenCube);
 		knotenRoot.setChild(knotenA);

@@ -87,6 +87,13 @@ public class FactoryImpl implements Factory {
 	public Matrix rotationMatrix(float ax, float ay, float az, float angle) {
 		float[] matrix = new float[16];
 		
+		Vector vector = new VectorImpl(ax, ay, az);		
+		vector = vector.normalize();
+		
+		ax = vector.x();
+		ay = vector.y();
+		az = vector.z();
+		
 		double cos = Math.cos(Math.toRadians(angle));
 		double sin = Math.sin(Math.toRadians(angle));
 
