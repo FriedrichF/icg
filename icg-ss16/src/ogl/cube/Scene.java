@@ -2,6 +2,9 @@ package ogl.cube;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import icg.math.FactoryImpl;
 import ogl.app.App;
 import ogl.app.Input;
@@ -10,30 +13,35 @@ import ogl.app.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Vector;
 import opengl.Shader;
+import scenegraph.Entity;
 import scenegraph.Geometrieknoten;
 import scenegraph.Gruppenknoten;
 import scenegraph.Knoten;
+import scenegraph.Rotor;
 import scenegraph.Traverser;
 
 public class Scene implements App {
 	static public void main(String[] args) {
 		new OpenGLApp("Scene", new Scene()).start();
 	}
+	
+	Knoten knotenRoot;
 
 	@Override
 	public void init() {
 		shader = Shader.getInstance();
-		Knoten knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(1, 0, 0));
+		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 1, -1.5f));
 		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
 		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
-		
+
 		knotenRoot.setChild(knotenCube);
 		knotenRoot.setChild(knotenA);
 		knotenA.setChild(knotenCube2);
-		
-		Traverser t = new Traverser();
-		
+
+		Entity rotor = new Rotor("Rotation", knotenRoot, vec(0, 1, 1), 300);
+		entities.add(rotor);
+
 		knotenRoot.accept(t);
 	}
 
@@ -45,9 +53,13 @@ public class Scene implements App {
 	@Override
 	public void simulate(float elapsed, Input input) {
 		// Pressing key 'r' toggles the cube animation.
-		if (input.isKeyToggled(GLFW_KEY_R))
-			// Increase the angle with a speed of 90 degrees per second.
-			shader.setAngle(shader.getAngle() + 90 * elapsed);
+		if (input.isKeyToggled(GLFW_KEY_R)) {
+			for (Entity entity : entities) {
+				entity.simulate(elapsed, input);
+			}
+		}
+		shader.clearLists();
+		knotenRoot.accept(t);
 	}
 
 	/*
@@ -72,8 +84,11 @@ public class Scene implements App {
 	/************************
 	 * Variable definitions *
 	 ************************/
-	
+
 	private Shader shader;
+
+	private List<Entity> entities = new ArrayList<Entity>();
+	Traverser t = new Traverser();
 
 	// Width, depth and height of the cube divided by 2.
 	float w2 = 0.5f;
@@ -147,11 +162,12 @@ public class Scene implements App {
 			v(p[5], c[5], n[5]), v(p[4], c[4], n[5]), v(p[1], c[1], n[5]),
 			// bottom 2
 			v(p[1], c[1], n[5]), v(p[0], c[0], n[5]), v(p[5], c[5], n[5]) };
-	
-	
-	private Vector[] p2 = { vec(-w2+0.5f, -h2+0.5f, d2+0.5f), vec(w2+0.5f, -h2+0.5f, d2+0.5f), vec(w2+0.5f, h2+0.5f, d2+0.5f), vec(-w2+0.5f, h2+0.5f, d2+0.5f), vec(w2+0.5f, -h2+0.5f, -d2+0.5f),
-			vec(-w2+0.5f, -h2+0.5f, -d2+0.5f), vec(-w2+0.5f, h2+0.5f, -d2+0.5f), vec(w2+0.5f, h2+0.5f, -d2+0.5f) };
-	
+
+	private Vector[] p2 = { vec(-w2 + 0.5f, -h2 + 0.5f, d2 + 0.5f), vec(w2 + 0.5f, -h2 + 0.5f, d2 + 0.5f),
+			vec(w2 + 0.5f, h2 + 0.5f, d2 + 0.5f), vec(-w2 + 0.5f, h2 + 0.5f, d2 + 0.5f),
+			vec(w2 + 0.5f, -h2 + 0.5f, -d2 + 0.5f), vec(-w2 + 0.5f, -h2 + 0.5f, -d2 + 0.5f),
+			vec(-w2 + 0.5f, h2 + 0.5f, -d2 + 0.5f), vec(w2 + 0.5f, h2 + 0.5f, -d2 + 0.5f) };
+
 	private Vertex[] cubeVertices2 = {
 			// front 1
 			v(p2[0], c[0], n[0]), v(p2[1], c[1], n[0]), v(p2[2], c[2], n[0]),

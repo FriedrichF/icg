@@ -9,7 +9,6 @@ public class Traverser {
 	Stack<Matrix> matrixStack = new Stack<Matrix>();
 
 	public void visit(Gruppenknoten k) {
-		System.out.println(k);
 		if (matrixStack.isEmpty())
 			matrixStack.push(k.getTransformMatrix());
 		else

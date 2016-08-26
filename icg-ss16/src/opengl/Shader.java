@@ -68,6 +68,11 @@ public class Shader {
 		}
 	}
 	
+	public void clearLists(){
+		this.vertexObjects.clear();
+		this.matrixArray.clear();
+	}
+	
 	public void addMatrices(Matrix modelMatrix, Matrix normalMatrix){
 		Matrix[] mArray = {modelMatrix, normalMatrix};
 		matrixArray.add(mArray);
@@ -149,7 +154,7 @@ public class Shader {
 			// The modeling transformation. Object space to world space.
 			Matrix modelMatrix = matrixArray.get(i)[0];
 
-			Matrix normalMatrix = matrixArray.get(i)[1];
+			Matrix normalMatrix = matrixArray.get(i)[1].transpose();
 
 			// Activate the shader program and set the transformation matrices
 			// to
