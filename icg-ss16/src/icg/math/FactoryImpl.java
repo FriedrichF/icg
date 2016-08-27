@@ -69,12 +69,12 @@ public class FactoryImpl implements Factory {
 		matrix[12] = x;
 		matrix[13] = y;
 		matrix[14] = z;
-		
+
 		float[] matrixInvers = identityMatrix().asArray();
 		matrixInvers[12] = -x;
 		matrixInvers[13] = -y;
 		matrixInvers[14] = -z;
-		
+
 		return new MatrixImpl(new MatrixCore(matrix), new MatrixCore(matrixInvers));
 	}
 
@@ -86,14 +86,14 @@ public class FactoryImpl implements Factory {
 	@Override
 	public Matrix rotationMatrix(float ax, float ay, float az, float angle) {
 		float[] matrix = new float[16];
-		
-		Vector vector = new VectorImpl(ax, ay, az);		
+
+		Vector vector = new VectorImpl(ax, ay, az);
 		vector = vector.normalize();
-		
+
 		ax = vector.x();
 		ay = vector.y();
 		az = vector.z();
-		
+
 		double cos = Math.cos(Math.toRadians(angle));
 		double sin = Math.sin(Math.toRadians(angle));
 
@@ -102,20 +102,20 @@ public class FactoryImpl implements Factory {
 		matrix[4] = (float) (ax * ay * (1 - cos) - az * sin);
 		matrix[8] = (float) (ax * az * (1 - cos) + ay * sin);
 		matrix[12] = 0;
-		
-		//2. Zeile
+
+		// 2. Zeile
 		matrix[1] = (float) (ay * ax * (1 - cos) + az * sin);
 		matrix[5] = (float) (Math.pow(ay, 2) * (1 - cos) + cos);
 		matrix[9] = (float) (ay * az * (1 - cos) - ax * sin);
 		matrix[13] = 0;
-		
+
 		// 3.Zeile
 		matrix[2] = (float) (az * ax * (1 - cos) - ay * sin);
 		matrix[6] = (float) (az * ay * (1 - cos) + ax * sin);
 		matrix[10] = (float) (Math.pow(az, 2) * (1 - cos) + cos);
 		matrix[14] = 0;
-		
-		//4. Zeile
+
+		// 4. Zeile
 		matrix[3] = 0;
 		matrix[7] = 0;
 		matrix[11] = 0;
@@ -147,7 +147,19 @@ public class FactoryImpl implements Factory {
 
 	@Override
 	public Matrix lookatMatrix(Vector eye, Vector center, Vector up) {
-		throw new IllegalArgumentException("lookatMatrix");
+		Vector zAxis = eye.sub(center);
+		zAxis = zAxis.normalize();
+		Vector xAxis = up.cross(zAxis);
+		xAxis = xAxis.normalize();
+		Vector yAxis = zAxis.cross(xAxis);
+
+		float[] array = { 
+				xAxis.x(), xAxis.y(), xAxis.z(),0, 
+				yAxis.x(), yAxis.y(), yAxis.z(),0,
+				zAxis.x(), zAxis.y(), zAxis.z(),0,
+				-xAxis.dot(eye), -yAxis.dot(eye), -zAxis.dot(eye),1 };
+
+		return new MatrixImpl(array);
 	}
 
 	@Override
@@ -157,7 +169,18 @@ public class FactoryImpl implements Factory {
 
 	@Override
 	public Matrix perspectiveMatrix(float fovy, float aspect, float zNear, float zFar) {
-		throw new IllegalArgumentException("perspectiveMatrix");
+		float alpha = (zFar + zNear) / (zNear - zFar);
+		float beta = (2 * zFar * zNear) / (zNear - zFar);
+
+		float rads = (float) Math.toRadians(0.5 * fovy);
+
+		// coTan
+		float f = (float) (1.0 / Math.tan(rads));
+
+		float[] s = { f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, alpha, -1, 0, 0, beta, 0 };
+
+		return new MatrixImpl(s);
+
 	}
 
 	@Override

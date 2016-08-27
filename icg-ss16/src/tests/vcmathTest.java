@@ -81,5 +81,21 @@ public class vcmathTest {
 		float[] test2 = vecmath.scaleMatrix(vectorPoint1).asArray();
 		Assert.assertArrayEquals(test1, test2, 0.0f);
 	}
+	
+	@Test
+	public void perspectiveTest(){
+		float[] test1 = FactoryImpl.vecmath.perspectiveMatrix(60f, 1, 0.1f, 100f).asArray();
+		float[] test2 = vecmath.perspectiveMatrix(60f, 1, 0.1f, 100f).asArray();
+		Assert.assertArrayEquals(test1, test2, 0.1f);
+	}
+	
+	@Test
+	public void lookAtTest(){
+		float[] test1 = FactoryImpl.vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f), FactoryImpl.vecmath.vector(0f, 0f, 0f),
+				FactoryImpl.vecmath.vector(0f, 1f, 0f)).asArray();
+		float[] test2 = vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f), FactoryImpl.vecmath.vector(0f, 0f, 0f),
+				FactoryImpl.vecmath.vector(0f, 1f, 0f)).asArray();
+		Assert.assertArrayEquals(test1, test2, 0.1f);
+	}
 
 }

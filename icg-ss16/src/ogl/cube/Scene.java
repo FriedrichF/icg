@@ -2,10 +2,14 @@ package ogl.cube;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import icg.math.FactoryImpl;
+import obj.Face;
+import obj.Model;
+import obj.objLoader;
 import ogl.app.App;
 import ogl.app.Input;
 import ogl.app.OpenGLApp;
@@ -24,25 +28,52 @@ public class Scene implements App {
 	static public void main(String[] args) {
 		new OpenGLApp("Scene", new Scene()).start();
 	}
-	
+
 	Knoten knotenRoot;
 
 	@Override
 	public void init() {
+		Model m = new Model();
+		try {
+			m = objLoader.loadFile("objFiles/bunny.obj");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		List<Vertex> bunnyVertex = new ArrayList<Vertex>();
+
+		for (Face face : m.getFaces()) {
+			// x
+			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[0] - 1), col(0.1f, 0, 0),
+					m.getNormals().get(face.getNormalIndex()[0] - 1)));
+			// y
+			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[1] - 1), col(0.1f, 0, 0),
+					m.getNormals().get(face.getNormalIndex()[1] - 1)));
+			// z
+			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[2] - 1), col(0.1f, 0, 0),
+					m.getNormals().get(face.getNormalIndex()[2] - 1)));
+		}
+
+		Vertex[] bunnyArray = new Vertex[bunnyVertex.size()];
+		bunnyArray = bunnyVertex.toArray(bunnyArray);
+
 		shader = Shader.getInstance();
-		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, -1, 0));
 		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 1, -1.5f));
-		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.identityMatrix(), cubeVertices);
-		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.identityMatrix(), cubeVertices);
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
+//		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.identityMatrix(), cubeVertices);
 
 		knotenRoot.setChild(knotenCube);
 		knotenRoot.setChild(knotenA);
-		knotenA.setChild(knotenCube2);
+//		knotenA.setChild(knotenCube2);
 
-		Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
+//		Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
 		Entity rotor2 = new Rotor("Rotation", knotenRoot, vec(0, 1, 0), 90);
-		entities.add(rotor);
+		Entity rotor3 = new Rotor("Rotation", knotenA, vec(0, -1, 0), 90);
+//		entities.add(rotor);
 		entities.add(rotor2);
+		entities.add(rotor3);
 
 		knotenRoot.accept(t);
 	}
@@ -131,7 +162,7 @@ public class Scene implements App {
 	// 0), col(1, 0, 1), col(0, 0, 1),
 	// col(0, 1, 1), col(1, 1, 1) };
 	private Color[] c = { col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0),
-			col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0) };
+			col(0.1f, 0, 0), col(0.1f, 0.1f, 0), col(0, 0.1f, 0) };
 
 	private Vector[] n = { vec(0f, 0f, 0.5f), vec(0f, 0f, -0.5f), vec(0.5f, 0f, 0f), vec(0f, 0.5f, 0f),
 			vec(-0.5f, 0f, 0f), vec(0f, -0.5f, 0f) };

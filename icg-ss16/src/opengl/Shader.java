@@ -1,6 +1,5 @@
 package opengl;
 
-import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import icg.math.FactoryImpl;
 import ogl.app.MatrixUniform;
 import ogl.app.Util;
 import ogl.app.Vertex;
@@ -67,14 +67,14 @@ public class Shader {
 			e.printStackTrace();
 		}
 	}
-	
-	public void clearLists(){
+
+	public void clearLists() {
 		this.vertexObjects.clear();
 		this.matrixArray.clear();
 	}
-	
-	public void addMatrices(Matrix modelMatrix, Matrix normalMatrix){
-		Matrix[] mArray = {modelMatrix, normalMatrix};
+
+	public void addMatrices(Matrix modelMatrix, Matrix normalMatrix) {
+		Matrix[] mArray = { modelMatrix, normalMatrix };
 		matrixArray.add(mArray);
 	}
 
@@ -144,11 +144,11 @@ public class Shader {
 		float aspect = (float) width / (float) height;
 
 		// The perspective projection. Camera space to NDC.
-		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
+		Matrix projectionMatrix = FactoryImpl.vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
 
 		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f), vecmath.vector(0f, 0f, 0f),
-				vecmath.vector(0f, 1f, 0f));
+		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f),
+				FactoryImpl.vecmath.vector(0f, 0f, 0f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
 
 		for (int i = 0; i < vertexObjects.size(); i++) {
 			// The modeling transformation. Object space to world space.
