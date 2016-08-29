@@ -17,6 +17,7 @@ import ogl.app.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Vector;
 import opengl.Shader;
+import scenegraph.Driver;
 import scenegraph.Entity;
 import scenegraph.Geometrieknoten;
 import scenegraph.Gruppenknoten;
@@ -60,20 +61,23 @@ public class Scene implements App {
 
 		shader = Shader.getInstance();
 		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, -1, 0));
-		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 1, -1.5f));
+		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
-//		Knoten knotenCube2 = new Geometrieknoten("Cube", FactoryImpl.vecmath.identityMatrix(), cubeVertices);
+		// Knoten knotenCube2 = new Geometrieknoten("Cube",
+		// FactoryImpl.vecmath.identityMatrix(), cubeVertices);
 
-		knotenRoot.setChild(knotenCube);
 		knotenRoot.setChild(knotenA);
-//		knotenA.setChild(knotenCube2);
+		knotenA.setChild(knotenCube);
+		// knotenA.setChild(knotenCube2);
 
-//		Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
-		Entity rotor2 = new Rotor("Rotation", knotenRoot, vec(0, 1, 0), 90);
+		// Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
+		// Entity rotor2 = new Rotor("Rotation", knotenRoot, vec(0, 1, 0), 90);
 		Entity rotor3 = new Rotor("Rotation", knotenA, vec(0, -1, 0), 90);
-//		entities.add(rotor);
-		entities.add(rotor2);
-		entities.add(rotor3);
+		Entity driver = new Driver("Driver", knotenCube, 0.01f);
+		// entities.add(rotor);
+		// entities.add(rotor2);
+		 entities.add(rotor3);
+		entities.add(driver);
 
 		knotenRoot.accept(t);
 	}
@@ -85,11 +89,8 @@ public class Scene implements App {
 	 */
 	@Override
 	public void simulate(float elapsed, Input input) {
-		// Pressing key 'r' toggles the cube animation.
-		if (input.isKeyToggled(GLFW_KEY_R)) {
-			for (Entity entity : entities) {
-				entity.simulate(elapsed, input);
-			}
+		for (Entity entity : entities) {
+			entity.simulate(elapsed, input);
 		}
 		shader.clearLists();
 		knotenRoot.accept(t);
