@@ -153,11 +153,8 @@ public class FactoryImpl implements Factory {
 		xAxis = xAxis.normalize();
 		Vector yAxis = zAxis.cross(xAxis);
 
-		float[] array = { 
-				xAxis.x(), xAxis.y(), xAxis.z(),0, 
-				yAxis.x(), yAxis.y(), yAxis.z(),0,
-				zAxis.x(), zAxis.y(), zAxis.z(),0,
-				-xAxis.dot(eye), -yAxis.dot(eye), -zAxis.dot(eye),1 };
+		float[] array = { xAxis.x(), xAxis.y(), xAxis.z(), 0, yAxis.x(), yAxis.y(), yAxis.z(), 0, zAxis.x(), zAxis.y(),
+				zAxis.z(), 0, -xAxis.dot(eye), -yAxis.dot(eye), -zAxis.dot(eye), 1 };
 
 		return new MatrixImpl(array);
 	}
@@ -193,6 +190,34 @@ public class FactoryImpl implements Factory {
 	@Override
 	public int colorSize() {
 		return 3;
+	}
+
+	public Vector getTranslation(Matrix matrix) {
+		return new VectorImpl(matrix.get(3, 0), matrix.get(3, 1), matrix.get(3, 2));
+	}
+	
+	public Matrix FPSViewRH( Vector eye, float pitch, float yaw )
+	{
+	    // If the pitch and yaw angles are in degrees,
+	    // they need to be converted to radians. Here
+	    // I assume the values are already converted to radians.
+	    float cosPitch = (float) Math.cos(Math.toRadians(pitch));
+	    float sinPitch = (float) Math.sin(Math.toRadians(pitch));
+	    float cosYaw = (float) Math.cos(Math.toRadians(yaw));
+	    float sinYaw = (float) Math.sin(Math.toRadians(yaw));
+	 
+	    Vector xaxis = new VectorImpl(cosYaw, 0, -sinYaw );
+	    Vector yaxis = new VectorImpl(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
+	    Vector zaxis = new VectorImpl(sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw);
+	 
+	    // Create a 4x4 view matrix from the right, up, forward and eye position vectors
+	    float[] matrixArray = {
+	    		xaxis.x(),            yaxis.x(),            zaxis.x(),      0 ,
+		        xaxis.y(),            yaxis.y(),            zaxis.y(),      0 ,
+		        xaxis.z(),            yaxis.z(),            zaxis.z(),      0 ,
+		        -eye.dot(xaxis), -eye.dot( yaxis ), -eye.dot( zaxis  ), 1f };
+	    
+	    return new MatrixImpl(matrixArray);
 	}
 
 }

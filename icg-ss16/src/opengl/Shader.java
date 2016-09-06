@@ -3,6 +3,7 @@ package opengl;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -17,19 +18,26 @@ import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniform1i;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL13;
+
 import icg.math.FactoryImpl;
 import ogl.app.MatrixUniform;
+import ogl.app.Texture;
 import ogl.app.Util;
 import ogl.app.Vertex;
 import ogl.app.VertexArrayObject;
 import ogl.vecmath.Matrix;
+import ogl.vecmath.Vector;
 
 public class Shader {
 
@@ -54,10 +62,20 @@ public class Shader {
 	private MatrixUniform viewMatrixUniform;
 	private MatrixUniform projectionMatrixUniform;
 	private MatrixUniform normalMatrixUniform;
+	
+	private int texLoc;
+	private Texture texture1;
 
 	// the Vertex Array Object which will represent the cube
 	private List<VertexArrayObject> vertexObjects = new ArrayList<VertexArrayObject>();
 	private List<Matrix[]> matrixArray = new ArrayList<Matrix[]>();
+	private Vector[] kameraArray = new Vector[3];
+	
+	public void addKamera(Vector eye, Vector center, Vector up){
+		kameraArray[0] = eye;
+		kameraArray[1] = center;
+		kameraArray[2] = up;
+	}
 
 	public void addVertexArrayObject(Vertex[] vertices) {
 		// create Vertex Array Object (VAO) from the cube's vertices
@@ -85,6 +103,8 @@ public class Shader {
 	}
 
 	private Shader() {
+		texture1 = new Texture(new File("checkered.png"));
+		
 		// Set background color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -117,6 +137,8 @@ public class Shader {
 		glBindAttribLocation(program, VertexArrayObject.vertexAttribIdx, "vertex");
 		glBindAttribLocation(program, VertexArrayObject.colorAttribIdx, "color");
 		glBindAttribLocation(program, VertexArrayObject.normalAttribIdx, "normal");
+		
+		texLoc = glGetUniformLocation(program, "tex");
 
 		// Link the shader program.
 		glLinkProgram(program);
@@ -125,6 +147,7 @@ public class Shader {
 		// Bind the matrix uniforms to locations on this shader program. This
 		// needs
 		// to be done *after* linking the program.
+		
 		modelMatrixUniform = new MatrixUniform(program, "modelMatrix");
 		viewMatrixUniform = new MatrixUniform(program, "viewMatrix");
 		projectionMatrixUniform = new MatrixUniform(program, "projectionMatrix");
@@ -138,6 +161,16 @@ public class Shader {
 
 		// Clear all buffers.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		
+		// Textur - Einheit waehlen
+		glEnable(GL_TEXTURE_2D);
+		GL13.glActiveTexture ( GL13.GL_TEXTURE0 );
+		// gespeicherte Textur aktivieren
+		texture1.bind ();
+		// Verknuepfung mit Shader herstellen
+		glUniform1i( texLoc , 0);
+
 
 		// Assemble the transformation matrix that will be applied to all
 		// vertices in the vertex shader.
@@ -147,14 +180,19 @@ public class Shader {
 		Matrix projectionMatrix = FactoryImpl.vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
 
 		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f),
-				FactoryImpl.vecmath.vector(0f, 0f, 0f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
+//		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f),
+//				FactoryImpl.vecmath.vector(0f, 0f, 0f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
+//		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(kameraArray[0],kameraArray[1],kameraArray[2]);
+		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(FactoryImpl.vecmath.vector(0f, 0f, 3f),0f,0f);
+		
+		Matrix modelMatrix;
+		Matrix normalMatrix;
 
 		for (int i = 0; i < vertexObjects.size(); i++) {
 			// The modeling transformation. Object space to world space.
-			Matrix modelMatrix = matrixArray.get(i)[0];
+			modelMatrix = matrixArray.get(i)[0];
 
-			Matrix normalMatrix = matrixArray.get(i)[1].transpose();
+			normalMatrix = matrixArray.get(i)[1].transpose();
 
 			// Activate the shader program and set the transformation matrices
 			// to

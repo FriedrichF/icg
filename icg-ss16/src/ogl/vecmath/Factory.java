@@ -184,6 +184,10 @@ public interface Factory {
    * @return The number of floats of color objects.
    */
   public abstract int colorSize();
+
+public Vector getTranslation(Matrix pop);
+
+public Matrix FPSViewRH(Vector vector, float vector2, float vector3);
   
   
 }

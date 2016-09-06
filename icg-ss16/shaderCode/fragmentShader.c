@@ -1,8 +1,10 @@
 #version 330
 
+in vec3 text1;
 in vec3 fcolor;
 in vec3 normalInterp;
 in vec3 vertPos;
+uniform sampler2D tex;
 out vec4 fragColor;
 
 const vec3 lightPos = vec3(0.0, 0.0, 1.0);
@@ -13,6 +15,7 @@ const float shininess = 800.0;
 const float screenGamma = 2.2;
 
 void main() {
+	vec3 color = vec3 ( texture (tex , vec2 ( text1.x, text1.y )));
 	vec3 normal = normalize(normalInterp);
 	vec3 lightDir = normalize(lightPos - vertPos);
 	float lambertian = max(dot(lightDir, normal), 0.0);
@@ -27,10 +30,11 @@ void main() {
     
 	}
 	
-	vec3 colorLinear = fcolor + lambertian * diffuseColor
+	vec3 colorLinear = color + lambertian * diffuseColor
 			+ specular * specColor;
 	vec3 colorGammaCorrected = pow(colorLinear, vec3(1.0 / screenGamma));
 	if(lambertian <= 0.0)gl_FragColor = vec4(colorGammaCorrected, 1.0);
 	gl_FragColor = vec4(colorGammaCorrected, 1.0);
+	//gl_FragColor = vec4 ( texture (tex , vec2 ( fcolor.x, fcolor.y )));
 	
 }

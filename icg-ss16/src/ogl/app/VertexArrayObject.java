@@ -19,6 +19,7 @@ public class VertexArrayObject {
 	public static int vertexAttribIdx = 0;
 	public static int colorAttribIdx = 1;
 	public static int normalAttribIdx = 2;
+	public static int textureAttribIdx = 3;
 
 	// the VAO id
 	private final int id;
@@ -74,18 +75,26 @@ public class VertexArrayObject {
 		FloatBuffer positionData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.vectorSize());
 		FloatBuffer colorData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.colorSize());
 		FloatBuffer normalData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.vectorSize());
+		FloatBuffer textureData = null;
+
+		if (vertices[0].texture != null)
+			textureData = BufferUtils.createFloatBuffer(numberOfVertices * FactoryImpl.vecmath.colorSize());
 
 		// fill buffers
 		for (Vertex v : vertices) {
 			positionData.put(v.position.asArray());
 			colorData.put(v.color.asArray());
 			normalData.put(v.normal.asArray());
+			if (vertices[0].texture != null)
+				textureData.put(v.texture.asArray());
 		}
 
 		// rewind buffers
 		positionData.rewind();
 		colorData.rewind();
 		normalData.rewind();
+		if (vertices[0].texture != null)
+			textureData.rewind();
 
 		// activate vertex array object
 		if (OpenGLApp.getGLMajor() >= 3)
@@ -97,8 +106,12 @@ public class VertexArrayObject {
 		// register Color Buffer
 		vbos.add(new VertexBufferObject(colorAttribIdx, colorData));
 
-		// register Color Buffer
+		// register Normal Buffer
 		vbos.add(new VertexBufferObject(normalAttribIdx, normalData));
+
+		// register Texture Buffer
+		if (vertices[0].texture != null)
+			vbos.add(new VertexBufferObject(textureAttribIdx, textureData));
 	}
 
 	public void unbind() {

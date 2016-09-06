@@ -2,6 +2,7 @@ package ogl.cube;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import obj.objLoader;
 import ogl.app.App;
 import ogl.app.Input;
 import ogl.app.OpenGLApp;
+import ogl.app.Texture;
 import ogl.app.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Vector;
@@ -21,12 +23,15 @@ import scenegraph.Driver;
 import scenegraph.Entity;
 import scenegraph.Geometrieknoten;
 import scenegraph.Gruppenknoten;
+import scenegraph.Kameraknoten;
 import scenegraph.Knoten;
 import scenegraph.Rotor;
 import scenegraph.Traverser;
 
 public class Scene implements App {
 	static public void main(String[] args) {
+		System.setProperty("java.awt.headless", "true");
+
 		new OpenGLApp("Scene", new Scene()).start();
 	}
 
@@ -47,39 +52,45 @@ public class Scene implements App {
 		for (Face face : m.getFaces()) {
 			// x
 			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[0] - 1), col(0.1f, 0, 0),
-					m.getNormals().get(face.getNormalIndex()[0] - 1)));
+					m.getNormals().get(face.getNormalIndex()[0] - 1), null));
 			// y
 			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[1] - 1), col(0.1f, 0, 0),
-					m.getNormals().get(face.getNormalIndex()[1] - 1)));
+					m.getNormals().get(face.getNormalIndex()[1] - 1), null));
 			// z
 			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[2] - 1), col(0.1f, 0, 0),
-					m.getNormals().get(face.getNormalIndex()[2] - 1)));
+					m.getNormals().get(face.getNormalIndex()[2] - 1), null));
 		}
 
 		Vertex[] bunnyArray = new Vertex[bunnyVertex.size()];
 		bunnyArray = bunnyVertex.toArray(bunnyArray);
 
 		shader = Shader.getInstance();
-		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, -1, 0));
-		Knoten knotenA = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
-		// Knoten knotenCube2 = new Geometrieknoten("Cube",
-		// FactoryImpl.vecmath.identityMatrix(), cubeVertices);
+		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		Knoten knotenA = new Gruppenknoten("KamerKnoten", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		Knoten bunnyKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(0, -1f, 0));
+		Knoten bunny = new Geometrieknoten("Cube", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
+		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 3f),
+				FactoryImpl.vecmath.vector(0f, 0f, -3f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
 
+		knotenRoot.setChild(bunnyKnoten);
+		// bunnyKnoten.setChild(bunny);
 		knotenRoot.setChild(knotenA);
 		knotenA.setChild(knotenCube);
+		knotenA.setChild(kamera);
 		// knotenA.setChild(knotenCube2);
 
 		// Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
 		// Entity rotor2 = new Rotor("Rotation", knotenRoot, vec(0, 1, 0), 90);
-		Entity rotor3 = new Rotor("Rotation", knotenA, vec(0, -1, 0), 90);
-		Entity driver = new Driver("Driver", knotenCube, 0.01f);
+		// Entity rotor3 = new Rotor("Rotation", knotenA, vec(0, -1, 0), 90);
+		Entity driver = new Driver("Driver", knotenA, 0.01f);
 		// entities.add(rotor);
 		// entities.add(rotor2);
-		 entities.add(rotor3);
+		// entities.add(rotor3);
 		entities.add(driver);
 
-		knotenRoot.accept(t);
+		traverser = new Traverser();
+		knotenRoot.accept(traverser);
 	}
 
 	/*
@@ -93,7 +104,9 @@ public class Scene implements App {
 			entity.simulate(elapsed, input);
 		}
 		shader.clearLists();
-		knotenRoot.accept(t);
+
+		traverser = new Traverser();
+		knotenRoot.accept(traverser);
 	}
 
 	/*
@@ -122,7 +135,7 @@ public class Scene implements App {
 	private Shader shader;
 
 	private List<Entity> entities = new ArrayList<Entity>();
-	Traverser t = new Traverser();
+	Traverser traverser;
 
 	// Width, depth and height of the cube divided by 2.
 	float w2 = 0.5f;
@@ -130,8 +143,8 @@ public class Scene implements App {
 	float d2 = 0.5f;
 
 	// Make construction of vertices easy on the eyes.
-	private Vertex v(Vector p, Color c, Vector n) {
-		return new Vertex(p, c, n);
+	private Vertex v(Vector p, Color c, Vector n, Vector tex) {
+		return new Vertex(p, c, n, tex);
 	}
 
 	// Make construction of vectors easy on the eyes.
@@ -150,13 +163,15 @@ public class Scene implements App {
 	// 3 ------- 2 |
 	// | | | |
 	// | 5 -----|- 4
-	// | / | /
+	// | / 	| 	/
 	// 0 ------- 1
 	//
 
 	// The positions of the cube vertices.
 	private Vector[] p = { vec(-w2, -h2, d2), vec(w2, -h2, d2), vec(w2, h2, d2), vec(-w2, h2, d2), vec(w2, -h2, -d2),
 			vec(-w2, -h2, -d2), vec(-w2, h2, -d2), vec(w2, h2, -d2) };
+	
+	private Vector[] t = { vec(0,0,0), vec(1,0,0), vec(1,1,0),vec(0,1,0)};
 
 	// The colors of the cube vertices.
 	// private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1,
@@ -173,58 +188,58 @@ public class Scene implements App {
 	// one side of the cube.
 	private Vertex[] cubeVertices = {
 			// front 1
-			v(p[0], c[0], n[0]), v(p[1], c[1], n[0]), v(p[2], c[2], n[0]),
+			v(p[0], c[0], n[0], t[0]), v(p[1], c[1], n[0], t[1]), v(p[2], c[2], n[0],t[2]),
 			// front 2
-			v(p[2], c[2], n[0]), v(p[3], c[3], n[0]), v(p[0], c[0], n[0]),
+			v(p[2], c[2], n[0],t[2]), v(p[3], c[3], n[0],t[3]), v(p[0], c[0], n[0],t[0]),
 			// back 1
-			v(p[4], c[4], n[1]), v(p[5], c[5], n[1]), v(p[6], c[6], n[1]),
+			v(p[4], c[4], n[1],t[0]), v(p[5], c[5], n[1],t[1]), v(p[6], c[6], n[1],t[2]),
 			// back 2
-			v(p[6], c[6], n[1]), v(p[7], c[7], n[1]), v(p[4], c[4], n[1]),
+			v(p[6], c[6], n[1],t[2]), v(p[7], c[7], n[1],t[3]), v(p[4], c[4], n[1],t[0]),
 			// right 1
-			v(p[1], c[1], n[2]), v(p[4], c[4], n[2]), v(p[7], c[7], n[2]),
+			v(p[1], c[1], n[2],t[0]), v(p[4], c[4], n[2],t[1]), v(p[7], c[7], n[2],t[2]),
 			// right 2
-			v(p[7], c[7], n[2]), v(p[2], c[2], n[2]), v(p[1], c[1], n[2]),
+			v(p[7], c[7], n[2],t[2]), v(p[2], c[2], n[2],t[3]), v(p[1], c[1], n[2],t[0]),
 			// top 1
-			v(p[3], c[3], n[3]), v(p[2], c[2], n[3]), v(p[7], c[7], n[3]),
+			v(p[3], c[3], n[3],t[0]), v(p[2], c[2], n[3],t[1]), v(p[7], c[7], n[3],t[2]),
 			// top 2
-			v(p[7], c[7], n[3]), v(p[6], c[6], n[3]), v(p[3], c[3], n[3]),
+			v(p[7], c[7], n[3],t[2]), v(p[6], c[6], n[3],t[3]), v(p[3], c[3], n[3],t[0]),
 			// left 1
-			v(p[5], c[5], n[4]), v(p[0], c[0], n[4]), v(p[3], c[3], n[4]),
+			v(p[5], c[5], n[4],t[0]), v(p[0], c[0], n[4],t[1]), v(p[3], c[3], n[4],t[2]),
 			// left 2
-			v(p[3], c[3], n[4]), v(p[6], c[6], n[4]), v(p[5], c[5], n[4]),
+			v(p[3], c[3], n[4],t[2]), v(p[6], c[6], n[4],t[3]), v(p[5], c[5], n[4],t[0]),
 			// bottom 1
-			v(p[5], c[5], n[5]), v(p[4], c[4], n[5]), v(p[1], c[1], n[5]),
+			v(p[5], c[5], n[5],t[0]), v(p[4], c[4], n[5],t[1]), v(p[1], c[1], n[5],t[2]),
 			// bottom 2
-			v(p[1], c[1], n[5]), v(p[0], c[0], n[5]), v(p[5], c[5], n[5]) };
+			v(p[1], c[1], n[5],t[2]), v(p[0], c[0], n[5],t[3]), v(p[5], c[5], n[5],t[0]) };
 
 	private Vector[] p2 = { vec(-w2 + 0.5f, -h2 + 0.5f, d2 + 0.5f), vec(w2 + 0.5f, -h2 + 0.5f, d2 + 0.5f),
 			vec(w2 + 0.5f, h2 + 0.5f, d2 + 0.5f), vec(-w2 + 0.5f, h2 + 0.5f, d2 + 0.5f),
 			vec(w2 + 0.5f, -h2 + 0.5f, -d2 + 0.5f), vec(-w2 + 0.5f, -h2 + 0.5f, -d2 + 0.5f),
 			vec(-w2 + 0.5f, h2 + 0.5f, -d2 + 0.5f), vec(w2 + 0.5f, h2 + 0.5f, -d2 + 0.5f) };
 
-	private Vertex[] cubeVertices2 = {
-			// front 1
-			v(p2[0], c[0], n[0]), v(p2[1], c[1], n[0]), v(p2[2], c[2], n[0]),
-			// front 2
-			v(p2[2], c[2], n[0]), v(p2[3], c[3], n[0]), v(p2[0], c[0], n[0]),
-			// back 1
-			v(p2[4], c[4], n[1]), v(p2[5], c[5], n[1]), v(p2[6], c[6], n[1]),
-			// back 2
-			v(p2[6], c[6], n[1]), v(p2[7], c[7], n[1]), v(p2[4], c[4], n[1]),
-			// right 1
-			v(p2[1], c[1], n[2]), v(p2[4], c[4], n[2]), v(p2[7], c[7], n[2]),
-			// right 2
-			v(p2[7], c[7], n[2]), v(p2[2], c[2], n[2]), v(p2[1], c[1], n[2]),
-			// top 1
-			v(p2[3], c[3], n[3]), v(p2[2], c[2], n[3]), v(p2[7], c[7], n[3]),
-			// top 2
-			v(p2[7], c[7], n[3]), v(p2[6], c[6], n[3]), v(p2[3], c[3], n[3]),
-			// left 1
-			v(p2[5], c[5], n[4]), v(p2[0], c[0], n[4]), v(p2[3], c[3], n[4]),
-			// left 2
-			v(p2[3], c[3], n[4]), v(p2[6], c[6], n[4]), v(p2[5], c[5], n[4]),
-			// bottom 1
-			v(p2[5], c[5], n[5]), v(p2[4], c[4], n[5]), v(p2[1], c[1], n[5]),
-			// bottom 2
-			v(p2[1], c[1], n[5]), v(p2[0], c[0], n[5]), v(p2[5], c[5], n[5]) };
+//	private Vertex[] cubeVertices2 = {
+//			// front 1
+//			v(p2[0], c[0], n[0]), v(p2[1], c[1], n[0]), v(p2[2], c[2], n[0]),
+//			// front 2
+//			v(p2[2], c[2], n[0]), v(p2[3], c[3], n[0]), v(p2[0], c[0], n[0]),
+//			// back 1
+//			v(p2[4], c[4], n[1]), v(p2[5], c[5], n[1]), v(p2[6], c[6], n[1]),
+//			// back 2
+//			v(p2[6], c[6], n[1]), v(p2[7], c[7], n[1]), v(p2[4], c[4], n[1]),
+//			// right 1
+//			v(p2[1], c[1], n[2]), v(p2[4], c[4], n[2]), v(p2[7], c[7], n[2]),
+//			// right 2
+//			v(p2[7], c[7], n[2]), v(p2[2], c[2], n[2]), v(p2[1], c[1], n[2]),
+//			// top 1
+//			v(p2[3], c[3], n[3]), v(p2[2], c[2], n[3]), v(p2[7], c[7], n[3]),
+//			// top 2
+//			v(p2[7], c[7], n[3]), v(p2[6], c[6], n[3]), v(p2[3], c[3], n[3]),
+//			// left 1
+//			v(p2[5], c[5], n[4]), v(p2[0], c[0], n[4]), v(p2[3], c[3], n[4]),
+//			// left 2
+//			v(p2[3], c[3], n[4]), v(p2[6], c[6], n[4]), v(p2[5], c[5], n[4]),
+//			// bottom 1
+//			v(p2[5], c[5], n[5]), v(p2[4], c[4], n[5]), v(p2[1], c[1], n[5]),
+//			// bottom 2
+//			v(p2[1], c[1], n[5]), v(p2[0], c[0], n[5]), v(p2[5], c[5], n[5]) };
 }
