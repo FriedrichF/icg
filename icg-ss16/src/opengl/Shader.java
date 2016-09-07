@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform3f;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +32,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL13;
 
 import icg.math.FactoryImpl;
+import myMath.VectorImpl;
 import ogl.app.MatrixUniform;
 import ogl.app.Texture;
 import ogl.app.Util;
@@ -64,17 +66,25 @@ public class Shader {
 	private MatrixUniform normalMatrixUniform;
 	
 	private int texLoc;
+	private int lightPos;
 	private Texture texture1;
 
 	// the Vertex Array Object which will represent the cube
 	private List<VertexArrayObject> vertexObjects = new ArrayList<VertexArrayObject>();
 	private List<Matrix[]> matrixArray = new ArrayList<Matrix[]>();
-	private Vector[] kameraArray = new Vector[3];
+	private Vector LightPos;
+	private Vector kameraArray;
+	private float pitch = 0;
+	private float yaw = 0;	
 	
-	public void addKamera(Vector eye, Vector center, Vector up){
-		kameraArray[0] = eye;
-		kameraArray[1] = center;
-		kameraArray[2] = up;
+	public void addLightPos(Vector v){
+		LightPos = v;
+	}
+	
+	public void addKamera(Vector eye, float pitch, float yaw){
+		kameraArray = eye;
+		this.pitch = pitch;
+		this.yaw = yaw;
 	}
 
 	public void addVertexArrayObject(Vertex[] vertices) {
@@ -137,8 +147,6 @@ public class Shader {
 		glBindAttribLocation(program, VertexArrayObject.vertexAttribIdx, "vertex");
 		glBindAttribLocation(program, VertexArrayObject.colorAttribIdx, "color");
 		glBindAttribLocation(program, VertexArrayObject.normalAttribIdx, "normal");
-		
-		texLoc = glGetUniformLocation(program, "tex");
 
 		// Link the shader program.
 		glLinkProgram(program);
@@ -147,6 +155,9 @@ public class Shader {
 		// Bind the matrix uniforms to locations on this shader program. This
 		// needs
 		// to be done *after* linking the program.
+		
+		texLoc = glGetUniformLocation(program, "text");
+		lightPos = glGetUniformLocation(program, "lightPos");
 		
 		modelMatrixUniform = new MatrixUniform(program, "modelMatrix");
 		viewMatrixUniform = new MatrixUniform(program, "viewMatrix");
@@ -170,6 +181,8 @@ public class Shader {
 		texture1.bind ();
 		// Verknuepfung mit Shader herstellen
 		glUniform1i( texLoc , 0);
+		
+		glUniform3f(lightPos, LightPos.x(), LightPos.y(), LightPos.z());
 
 
 		// Assemble the transformation matrix that will be applied to all
@@ -182,8 +195,8 @@ public class Shader {
 		// The inverse camera transformation. World space to camera space.
 //		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f),
 //				FactoryImpl.vecmath.vector(0f, 0f, 0f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
-//		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(kameraArray[0],kameraArray[1],kameraArray[2]);
-		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(FactoryImpl.vecmath.vector(0f, 0f, 3f),0f,0f);
+//		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(kameraArray[0],kameraArray[1],kameraArray[2]);
+		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(kameraArray,pitch,yaw);
 		
 		Matrix modelMatrix;
 		Matrix normalMatrix;

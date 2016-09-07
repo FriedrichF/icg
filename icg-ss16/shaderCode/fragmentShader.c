@@ -5,9 +5,10 @@ in vec3 fcolor;
 in vec3 normalInterp;
 in vec3 vertPos;
 uniform sampler2D tex;
+uniform vec3 lightPos;
 out vec4 fragColor;
 
-const vec3 lightPos = vec3(0.0, 0.0, 1.0);
+//const vec3 lightPos = vec3(0.0, 0.0, 1.0);
 //const vec3 ambientColor = vec3(0.1, 0.0, 0.0);
 const vec3 diffuseColor = vec3(0.7, 0.0, 0.0);
 const vec3 specColor = vec3(1.0, 1.0, 1.0);
@@ -17,7 +18,7 @@ const float screenGamma = 2.2;
 void main() {
 	vec3 color = vec3 ( texture (tex , vec2 ( text1.x, text1.y )));
 	vec3 normal = normalize(normalInterp);
-	vec3 lightDir = normalize(lightPos - vertPos);
+	vec3 lightDir = normalize(lightPos);
 	float lambertian = max(dot(lightDir, normal), 0.0);
 	float specular = 0.0;
 	

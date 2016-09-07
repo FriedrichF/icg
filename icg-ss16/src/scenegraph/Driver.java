@@ -8,7 +8,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import icg.math.FactoryImpl;
 import myMath.VectorImpl;
 import ogl.app.Input;
-import ogl.vecmath.Vector;
 
 public class Driver extends Entity {
 
@@ -29,9 +28,9 @@ public class Driver extends Entity {
 		if (input.isKeyDown(GLFW_KEY_S))
 			zRichtung += 1;
 		if (input.isKeyDown(GLFW_KEY_A))
-			this.getKnoten().setTransformMatrix(this.getKnoten().getTransformMatrix().mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(0,1f,0), 90*elapsed)));
-		if (input.isKeyDown(GLFW_KEY_D))
 			this.getKnoten().setTransformMatrix(this.getKnoten().getTransformMatrix().mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(0,1f,0), -90*elapsed)));
+		if (input.isKeyDown(GLFW_KEY_D))
+			this.getKnoten().setTransformMatrix(this.getKnoten().getTransformMatrix().mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(0,1f,0), 90*elapsed)));
 		
 
 		this.getKnoten().setTransformMatrix(this.getKnoten().getTransformMatrix()

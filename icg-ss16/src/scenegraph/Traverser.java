@@ -42,7 +42,18 @@ public class Traverser {
 		
 		Matrix pop = matrixStack.pop();
 		
-		Shader.getInstance().addKamera(FactoryImpl.vecmath.getTranslation(pop), FactoryImpl.vecmath.getTranslation(pop.mult(FactoryImpl.vecmath.translationMatrix(kameraknoten.getCenter()))), kameraknoten.getUp());
+		Shader.getInstance().addKamera(FactoryImpl.vecmath.getTranslation(pop), 0f, 0f);
 		
+	}
+
+	public void visit(Lichtknoten lichtknoten) {
+		if (matrixStack.isEmpty())
+			matrixStack.push(lichtknoten.getTransformMatrix());
+		else
+			matrixStack.push(matrixStack.peek().mult(lichtknoten.getTransformMatrix()));
+		
+		Matrix pop = matrixStack.pop();
+		
+		Shader.getInstance().addLightPos(FactoryImpl.vecmath.getTranslation(pop));
 	}
 }

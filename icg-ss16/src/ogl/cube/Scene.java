@@ -25,6 +25,7 @@ import scenegraph.Geometrieknoten;
 import scenegraph.Gruppenknoten;
 import scenegraph.Kameraknoten;
 import scenegraph.Knoten;
+import scenegraph.Lichtknoten;
 import scenegraph.Rotor;
 import scenegraph.Traverser;
 
@@ -68,25 +69,26 @@ public class Scene implements App {
 		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenA = new Gruppenknoten("KamerKnoten", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten bunnyKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(0, -1f, 0));
-		Knoten bunny = new Geometrieknoten("Cube", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
+		Knoten bunny = new Geometrieknoten("Bunny", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
 		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 3f),
 				FactoryImpl.vecmath.vector(0f, 0f, -3f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
 		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
+		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, 0), cubeVertices);
+		
+		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 0, 1));
 
-		knotenRoot.setChild(bunnyKnoten);
-		// bunnyKnoten.setChild(bunny);
 		knotenRoot.setChild(knotenA);
-		knotenA.setChild(knotenCube);
-		knotenA.setChild(kamera);
-		// knotenA.setChild(knotenCube2);
+		knotenRoot.setChild(knotenCube);
+		knotenRoot.setChild(knotenCube2);
+		knotenRoot.setChild(kamera);
+		knotenA.setChild(lichtKnoten);
 
-		// Entity rotor = new Rotor("Rotation", knotenCube2, vec(1, 1, 1), 90);
-		// Entity rotor2 = new Rotor("Rotation", knotenRoot, vec(0, 1, 0), 90);
-		// Entity rotor3 = new Rotor("Rotation", knotenA, vec(0, -1, 0), 90);
+		Entity rotorLicht = new Rotor("Licht rotation", knotenA, vec(0,-1,0), 60);
+		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(0, -1, 0), 20);
 		Entity driver = new Driver("Driver", knotenA, 0.01f);
-		// entities.add(rotor);
-		// entities.add(rotor2);
-		// entities.add(rotor3);
+		
+		entities.add(rotorLicht);
+//		entities.add(rotor3);
 		entities.add(driver);
 
 		traverser = new Traverser();
@@ -103,6 +105,7 @@ public class Scene implements App {
 		for (Entity entity : entities) {
 			entity.simulate(elapsed, input);
 		}
+		cleanUp();
 		shader.clearLists();
 
 		traverser = new Traverser();
