@@ -36,6 +36,4 @@ void main() {
 	vec3 colorGammaCorrected = pow(colorLinear, vec3(1.0 / screenGamma));
 	if(lambertian <= 0.0)gl_FragColor = vec4(colorGammaCorrected, 1.0);
 	gl_FragColor = vec4(colorGammaCorrected, 1.0);
-	//gl_FragColor = vec4 ( texture (tex , vec2 ( fcolor.x, fcolor.y )));
-	
 }

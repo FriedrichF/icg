@@ -4,8 +4,6 @@
  *******************************************************************************/
 package ogl.cube;
 
-//Select the factory we want to use.
-import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
 import icg.math.FactoryImpl;
@@ -75,7 +73,7 @@ public class RotatingCube implements App {
 
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c, Vector n) {
-		return new Vertex(p, c, n);
+		return new Vertex(p, c, n, null);
 	}
 
 	// Make construction of vectors easy on the eyes.

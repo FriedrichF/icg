@@ -3,6 +3,7 @@ package scenegraph;
 import java.util.Stack;
 
 import icg.math.FactoryImpl;
+import myMath.VectorImpl;
 import ogl.vecmath.Matrix;
 import opengl.Shader;
 
@@ -40,9 +41,10 @@ public class Traverser {
 		else
 			matrixStack.push(matrixStack.peek().mult(kameraknoten.getTransformMatrix()));
 		
-		Matrix pop = matrixStack.pop();
+		Matrix pop = matrixStack.pop().invertFull();
 		
-		Shader.getInstance().addKamera(FactoryImpl.vecmath.getTranslation(pop), 0f, 0f);
+//		Shader.getInstance().addKamera(new VectorImpl(pop.get(3, 0), pop.get(3, 1), pop.get(3, 2)), yaw, pitch);
+//		Shader.getInstance().addViewMatrix(pop);
 		
 	}
 

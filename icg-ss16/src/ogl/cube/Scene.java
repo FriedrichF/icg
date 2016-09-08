@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icg.math.FactoryImpl;
+import myMath.VectorImpl;
 import obj.Face;
 import obj.Model;
 import obj.objLoader;
@@ -70,25 +71,26 @@ public class Scene implements App {
 		Knoten knotenA = new Gruppenknoten("KamerKnoten", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten bunnyKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(0, -1f, 0));
 		Knoten bunny = new Geometrieknoten("Bunny", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
-		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 3f),
-				FactoryImpl.vecmath.vector(0f, 0f, -3f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
-		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, 0), cubeVertices);
-		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, 0), cubeVertices);
+		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, -3), cubeVertices);
+		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, -3), cubeVertices);
+		Knoten knotenCube3 = new Geometrieknoten("Cube3", FactoryImpl.vecmath.translationMatrix(0, -1, -1), cubeVertices);
 		
-		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 0, 1));
+		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 2, 1));
 
 		knotenRoot.setChild(knotenA);
 		knotenRoot.setChild(knotenCube);
 		knotenRoot.setChild(knotenCube2);
-		knotenRoot.setChild(kamera);
-		knotenA.setChild(lichtKnoten);
+		knotenRoot.setChild(lichtKnoten);
+		knotenA.setChild(kamera);
+		knotenA.setChild(knotenCube3);
 
-		Entity rotorLicht = new Rotor("Licht rotation", knotenA, vec(0,-1,0), 60);
-		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(0, -1, 0), 20);
-		Entity driver = new Driver("Driver", knotenA, 0.01f);
+		Entity rotorLicht = new Rotor("Licht rotation", kamera, vec(0,-1,0), 60);
+		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(1, 0, 0), 30);
+		Entity driver = new Driver("Driver", kamera, 0.01f);
 		
-		entities.add(rotorLicht);
-//		entities.add(rotor3);
+//		entities.add(rotorLicht);
+		entities.add(rotor3);
 		entities.add(driver);
 
 		traverser = new Traverser();

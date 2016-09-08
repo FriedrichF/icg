@@ -6,30 +6,20 @@ import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
 public class Kameraknoten extends Knoten {
-	
-	public Vector getUp() {
-		return up;
-	}
 
-	public void setUp(Vector up) {
-		this.up = up;
-	}
+	Kamera camera;
 
-	public Vector getCenter() {
-		return center;
-	}
-
-	public void setCenter(Vector center) {
-		this.center = center;
-	}
-
-	private Vector up;
-	private Vector center;
-
-	public Kameraknoten(String name, Matrix matrix, Vector center, Vector up) {
+	public Kameraknoten(String name, Matrix matrix) {
 		super(name, matrix);
-		this.center = center;
-		this.up = up;
+		this.camera = new Kamera(0,0,0);
+	}
+
+	public Kamera getCamera() {
+		return camera;
+	}
+
+	public void setCamera(Kamera camera) {
+		this.camera = camera;
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import static org.lwjgl.opengl.GL20.glAttachShader;
@@ -76,15 +77,20 @@ public class Shader {
 	private Vector kameraArray;
 	private float pitch = 0;
 	private float yaw = 0;	
+	private Matrix viewMatrix;
 	
 	public void addLightPos(Vector v){
 		LightPos = v;
 	}
 	
-	public void addKamera(Vector eye, float pitch, float yaw){
-		kameraArray = eye;
-		this.pitch = pitch;
+	public void addKamera(Vector kamera, float yaw, float pitch){
+		kameraArray = kamera;
 		this.yaw = yaw;
+		this.pitch = pitch;
+	}
+	
+	public void addViewMatrix(Matrix view){
+		this.viewMatrix = view;
 	}
 
 	public void addVertexArrayObject(Vertex[] vertices) {
@@ -110,6 +116,13 @@ public class Shader {
 		if (instance == null)
 			instance = new Shader();
 		return instance;
+	}
+	
+	private Matrix lookThrough(){
+		Matrix look = FactoryImpl.vecmath.identityMatrix().mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(1,0,0), (float) Math.toDegrees(pitch)));
+		look = look.mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(0,1,0), (float) Math.toDegrees(yaw)));
+		look = look.mult(FactoryImpl.vecmath.translationMatrix(kameraArray));
+		return look;
 	}
 
 	private Shader() {
@@ -196,7 +209,8 @@ public class Shader {
 //		Matrix viewMatrix = FactoryImpl.vecmath.lookatMatrix(FactoryImpl.vecmath.vector(0f, 0f, 3f),
 //				FactoryImpl.vecmath.vector(0f, 0f, 0f), FactoryImpl.vecmath.vector(0f, 1f, 0f));
 //		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(kameraArray[0],kameraArray[1],kameraArray[2]);
-		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(kameraArray,pitch,yaw);
+//		Matrix viewMatrix = FactoryImpl.vecmath.FPSViewRH(kameraArray,pitch,yaw);
+		
 		
 		Matrix modelMatrix;
 		Matrix normalMatrix;
