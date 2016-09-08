@@ -24,6 +24,7 @@ import scenegraph.Driver;
 import scenegraph.Entity;
 import scenegraph.Geometrieknoten;
 import scenegraph.Gruppenknoten;
+import scenegraph.Jumper;
 import scenegraph.Kameraknoten;
 import scenegraph.Knoten;
 import scenegraph.Lichtknoten;
@@ -85,6 +86,7 @@ public class Scene implements App {
 		knotenA.setChild(kamera);
 		knotenA.setChild(knotenCube3);
 
+		Entity jumper = new Jumper("Jumger", knotenCube2,vec(0,1,0), 2f, 1f);
 		Entity rotorLicht = new Rotor("Licht rotation", kamera, vec(0,-1,0), 60);
 		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(1, 0, 0), 30);
 		Entity driver = new Driver("Driver", kamera, 0.01f);
@@ -92,6 +94,7 @@ public class Scene implements App {
 //		entities.add(rotorLicht);
 		entities.add(rotor3);
 		entities.add(driver);
+		entities.add(jumper);
 
 		traverser = new Traverser();
 		knotenRoot.accept(traverser);
