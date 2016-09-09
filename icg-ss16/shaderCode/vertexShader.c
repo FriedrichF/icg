@@ -3,8 +3,8 @@
 in vec3 vertex;
 in vec3 color;
 in vec3 normal;
-in vec3 text;
-out vec3 text1;
+in vec2 texCoord;
+out vec2 ftexCoord;
 out vec3 fcolor;
 out vec3 vertPos;
 out vec3 normalInterp;
@@ -15,7 +15,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 normalMatrix;
 
 void main() {
-	text1 = text;
+	ftexCoord = texCoord;
 	fcolor = color;
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix
 			* vec4(vertex, 1.0);

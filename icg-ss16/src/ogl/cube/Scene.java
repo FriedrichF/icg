@@ -44,34 +44,20 @@ public class Scene implements App {
 	public void init() {
 		Model m = new Model();
 		try {
-			m = objLoader.loadFile("objFiles/bunny.obj");
+			m = objLoader.loadFile("objFiles/naboo.obj");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		List<Vertex> bunnyVertex = new ArrayList<Vertex>();
-
-		for (Face face : m.getFaces()) {
-			// x
-			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[0] - 1), col(0.1f, 0, 0),
-					m.getNormals().get(face.getNormalIndex()[0] - 1), null));
-			// y
-			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[1] - 1), col(0.1f, 0, 0),
-					m.getNormals().get(face.getNormalIndex()[1] - 1), null));
-			// z
-			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[2] - 1), col(0.1f, 0, 0),
-					m.getNormals().get(face.getNormalIndex()[2] - 1), null));
-		}
-
-		Vertex[] bunnyArray = new Vertex[bunnyVertex.size()];
-		bunnyArray = bunnyVertex.toArray(bunnyArray);
+		Vertex[] bunnyArray = objLoader.getVertexArray(m, col(0.1f, 0, 0));
 
 		shader = Shader.getInstance();
 		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenA = new Gruppenknoten("KamerKnoten", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten bunnyKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(0, -1f, 0));
-		Knoten bunny = new Geometrieknoten("Bunny", FactoryImpl.vecmath.scaleMatrix(10, 10, 10), bunnyArray);
+		Knoten kugelKnoten = new Gruppenknoten("Kugel Knoten", FactoryImpl.vecmath.translationMatrix(1,0,0));
+		Knoten kugel = new Geometrieknoten("Kugel", FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f, 0.005f), bunnyArray);
 		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, -3), cubeVertices);
 		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, -3), cubeVertices);
@@ -81,12 +67,13 @@ public class Scene implements App {
 
 		knotenRoot.setChild(knotenA);
 		knotenRoot.setChild(knotenCube);
-		knotenRoot.setChild(knotenCube2);
+		knotenRoot.setChild(kugelKnoten);
+		kugelKnoten.setChild(kugel);
 		knotenRoot.setChild(lichtKnoten);
 		knotenA.setChild(kamera);
 		knotenA.setChild(knotenCube3);
 
-		Entity jumper = new Jumper("Jumger", knotenCube2,vec(0,1,0), 2f, 1f);
+		Entity jumper = new Jumper("Jumger", kugel,vec(0,1,0), 2f, 100f);
 		Entity rotorLicht = new Rotor("Licht rotation", kamera, vec(0,-1,0), 60);
 		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(1, 0, 0), 30);
 		Entity driver = new Driver("Driver", kamera, 0.01f);
@@ -94,7 +81,7 @@ public class Scene implements App {
 //		entities.add(rotorLicht);
 		entities.add(rotor3);
 		entities.add(driver);
-		entities.add(jumper);
+//		entities.add(jumper);
 
 		traverser = new Traverser();
 		knotenRoot.accept(traverser);
@@ -185,8 +172,8 @@ public class Scene implements App {
 	// private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1,
 	// 0), col(1, 0, 1), col(0, 0, 1),
 	// col(0, 1, 1), col(1, 1, 1) };
-	private Color[] c = { col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0), col(0.1f, 0, 0),
-			col(0.1f, 0, 0), col(0.1f, 0.1f, 0), col(0, 0.1f, 0) };
+	private Color[] c = { col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0),
+			col(0f, 0, 0), col(0f, 0f, 0), col(0, 0f, 0) };
 
 	private Vector[] n = { vec(0f, 0f, 0.5f), vec(0f, 0f, -0.5f), vec(0.5f, 0f, 0f), vec(0f, 0.5f, 0f),
 			vec(-0.5f, 0f, 0f), vec(0f, -0.5f, 0f) };
