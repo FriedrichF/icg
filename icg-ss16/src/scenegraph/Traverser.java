@@ -30,7 +30,7 @@ public class Traverser {
 		
 		Matrix topMatrix = matrixStack.pop();
 		
-		Shader.getInstance().addVertexArrayObject(k.vertices);
+		Shader.getInstance().addVertexArrayObject(k);
 		Shader.getInstance().addMatrices(topMatrix, topMatrix.invertFull());
 		
 	}

@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.opengl.GL20.glUniform3f;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 
@@ -39,6 +40,8 @@ import ogl.app.Vertex;
 import ogl.app.VertexArrayObject;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
+import scenegraph.Geometrieknoten;
+import scenegraph.TextureNormal;
 
 public class Shader {
 
@@ -66,9 +69,8 @@ public class Shader {
 
 	private int texLoc;
 	private int normalLoc;
+	private int hasNormalLoc;
 	private int lightPos;
-	private Texture texture;
-	private Texture texture2;
 
 	// the Vertex Array Object which will represent the cube
 	private List<VertexArrayObject> vertexObjects = new ArrayList<VertexArrayObject>();
@@ -84,10 +86,10 @@ public class Shader {
 		this.viewMatrix = view;
 	}
 
-	public void addVertexArrayObject(Vertex[] vertices) {
+	public void addVertexArrayObject(Geometrieknoten k) {
 		// create Vertex Array Object (VAO) from the cube's vertices
 		try {
-			this.vertexObjects.add(new VertexArrayObject(vertices));
+			this.vertexObjects.add(new VertexArrayObject(k));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -148,7 +150,7 @@ public class Shader {
 		glLinkProgram(program);
 		Util.checkLinkage(program);
 		glUseProgram(program);
-		
+
 		// Bind the matrix uniforms to locations on this shader program. This
 		// needs
 		// to be done *after* linking the program.
@@ -156,25 +158,11 @@ public class Shader {
 		viewMatrixUniform = new MatrixUniform(program, "viewMatrix");
 		projectionMatrixUniform = new MatrixUniform(program, "projectionMatrix");
 		normalMatrixUniform = new MatrixUniform(program, "normalMatrix");
-		
-		
-		
+
 		lightPos = glGetUniformLocation(program, "lightPos");
 		texLoc = glGetUniformLocation(program, "tex");
 		normalLoc = glGetUniformLocation(program, "normalTex");
-
-		// Textur - Einheit waehlen
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		texture = new Texture(new File("154.jpg"));
-		texture.bind();
-		glUniform1i(texLoc, 0);
-
-		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		texture2 = new Texture(new File("154_norm.jpg"));
-		texture2.bind();
-		glUniform1i(normalLoc, 1);
-		
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		hasNormalLoc = glGetUniformLocation(program, "hasNormal");
 	}
 
 	public void display(int width, int height) {
@@ -198,7 +186,15 @@ public class Shader {
 		Matrix normalMatrix;
 
 		for (int i = 0; i < vertexObjects.size(); i++) {
+			if(vertexObjects.get(i).knoten.getNormalIndex() == -1){
+				glUniform1f(hasNormalLoc, 0.0f);
+			}else{
+				glUniform1f(hasNormalLoc, 1.0f);
+				glUniform1f(normalLoc, vertexObjects.get(i).knoten.getNormalIndex());
+			}
 			
+			
+			glUniform1i(texLoc, vertexObjects.get(i).knoten.getTextureIndex());
 
 			// The modeling transformation. Object space to world space.
 			modelMatrix = matrixArray.get(i)[0];
@@ -255,5 +251,19 @@ public class Shader {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public void initTextures(List<TextureNormal> textures) {
+		for(int i = 0; i < textures.size(); i++){
+			GL13.glActiveTexture(GL13.GL_TEXTURE0 + i);
+			Texture texture = new Texture(new File(textures.get(i).getTexturePath()));
+			texture.bind();
+			if(textures.get(i).isNormal())
+				glUniform1i(normalLoc, i);
+			else
+				glUniform1i(texLoc, i);
+		}
+
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 	}
 }

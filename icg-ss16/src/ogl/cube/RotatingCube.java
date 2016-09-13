@@ -23,9 +23,9 @@ public class RotatingCube implements App {
 
 	@Override
 	public void init() {
-		shader = Shader.getInstance();
-		shader.addVertexArrayObject(cubeVertices);
-		shader.addVertexArrayObject(cubeVertices2);
+//		shader = Shader.getInstance();
+//		shader.addVertexArrayObject(cubeVertices);
+//		shader.addVertexArrayObject(cubeVertices2);
 	}
 
 	/*

@@ -12,6 +12,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 import icg.math.FactoryImpl;
+import scenegraph.Geometrieknoten;
 
 //Auxiliary class to represent a Vertex Array Object (VAO)
 public class VertexArrayObject {
@@ -27,6 +28,8 @@ public class VertexArrayObject {
 	private final int numberOfVertices;
 	// the vertex buffer objects associated with this VAO
 	private ArrayList<VertexBufferObject> vbos = new ArrayList<VertexBufferObject>();
+	
+	public Geometrieknoten knoten;
 
 	// Auxiliary class to represent a Vertex Buffer Object (VBO)
 	private class VertexBufferObject {
@@ -59,13 +62,17 @@ public class VertexArrayObject {
 	 *            the vertices to be inserted into the VAO
 	 * @return the created vertex array object's id
 	 */
-	public VertexArrayObject(Vertex[] vertices) throws Exception {
+	public VertexArrayObject(Geometrieknoten knoten) throws Exception {
 		// create the VAO id
 		if (OpenGLApp.getGLMajor() >= 3)
 			id = GL30.glGenVertexArrays();
 		else
 			id = -1;
 
+		Vertex[] vertices = knoten.vertices; 
+		
+		this.knoten = knoten;
+		
 		// store the number of vertices
 		numberOfVertices = vertices.length;
 

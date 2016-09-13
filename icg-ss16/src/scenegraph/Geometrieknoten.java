@@ -7,11 +7,31 @@ import ogl.vecmath.Matrix;
 
 public class Geometrieknoten extends Knoten {
 
-	Vertex[] vertices;
+	public Vertex[] vertices;
+	private int textureIndex;
+	private int normalIndex;
 	
-	public Geometrieknoten(String name, Matrix matrix, Vertex[] vertices) {
+	public int getTextureIndex() {
+		return textureIndex;
+	}
+
+	public void setTextureIndex(int textureIndex) {
+		this.textureIndex = textureIndex;
+	}
+
+	public int getNormalIndex() {
+		return normalIndex;
+	}
+
+	public void setNormalIndex(int normalIndex) {
+		this.normalIndex = normalIndex;
+	}
+
+	public Geometrieknoten(String name, Matrix matrix, Vertex[] vertices, int textureIndex, int normalIndex) {
 		super(name, matrix);
 		this.vertices = vertices;
+		this.textureIndex = textureIndex;
+		this.normalIndex = normalIndex;
 	}
 
 	@Override

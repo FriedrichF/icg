@@ -4,6 +4,7 @@ in vec2 ftexCoord;
 in vec3 fcolor;
 in vec3 normalInterp;
 in vec3 vertPos;
+uniform float hasNormal;
 uniform sampler2D tex;
 uniform sampler2D normalTex;
 uniform vec3 lightPos;
@@ -17,9 +18,14 @@ const float shininess = 600.0;
 const float screenGamma = 1.0;
 
 void main() {
+	vec3 normal;
 	vec3 color = vec3 ( texture (tex , ftexCoord));
-	vec3 normal = texture(normalTex, ftexCoord).rgb;
-	normal = normalize(normal * 2.0 - 1.0);
+	if(hasNormal < 0.5){
+		normal = normalize(normalInterp);
+	}else{
+		normal = texture(normalTex, ftexCoord).rgb;
+		normal = normalize(normal * 2.0 - 1.0);
+	}
 	vec3 normalObj = normalize(normalInterp);
 	vec3 lightDir = normalize(lightPos);
 	float lambertian = max(dot(lightDir, normal), 0.0);
@@ -31,7 +37,6 @@ void main() {
 		float specAngle = max(dot(halfDir, normalObj), 0.0);
 		specular = pow(specAngle, shininess);
 		gl_FragColor = vec4(normal, 1.0);
-    
 	}
 	
 	vec3 colorLinear = color + lambertian * diffuseColor
