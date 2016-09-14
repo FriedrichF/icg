@@ -56,12 +56,14 @@ public class Kamera {
 	// moves the camera forward relative to its current rotation (yaw)
 	public void walkForward(float distance) {
 		position.asArray()[0] -= distance * (float) Math.sin(Math.toRadians(yaw));
+		position.asArray()[1] += distance * (float) Math.sin(Math.toRadians(pitch));
 		position.asArray()[2] += distance * (float) Math.cos(Math.toRadians(yaw));
 	}
 
 	// moves the camera backward relative to its current rotation (yaw)
 	public void walkBackwards(float distance) {
 		position.asArray()[0] += distance * (float) Math.sin(Math.toRadians(yaw));
+		position.asArray()[1] -= distance * (float) Math.sin(Math.toRadians(pitch));
 		position.asArray()[2] -= distance * (float) Math.cos(Math.toRadians(yaw));
 	}
 

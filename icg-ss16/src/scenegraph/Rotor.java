@@ -2,7 +2,9 @@ package scenegraph;
 
 import icg.math.FactoryImpl;
 import ogl.app.Input;
+import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
+import opengl.Shader;
 
 public class Rotor extends Entity {
 
@@ -33,8 +35,13 @@ public class Rotor extends Entity {
 
 	@Override
 	public void simulate(float elapsed, Input input) {
-		this.getKnoten().setTransformMatrix(this.getKnoten().getTransformMatrix()
-				.mult(FactoryImpl.vecmath.rotationMatrix(rotateAxis, speed * elapsed)));
+		Matrix calcMatrix = this.getKnoten().getTransformMatrix()
+				.mult(FactoryImpl.vecmath.rotationMatrix(rotateAxis, speed * elapsed));
+		
+		if(this.getKnoten() instanceof Lichtknoten)
+			Shader.getInstance().addLightPos(FactoryImpl.vecmath.getTranslation(calcMatrix));
+		else
+			this.getKnoten().setTransformMatrix(calcMatrix);
 	}
 
 }
