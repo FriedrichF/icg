@@ -16,7 +16,7 @@ public class SceneTester {
 		for(int i = 10; i <= 360; i = i+10){
 			knotenR.setTransformMatrix(knotenR.getTransformMatrix().mult(FactoryImpl.vecmath.translationMatrix(0, 0, 1)));
 //			knotenT.draw(FactoryImpl.vecmath.identityMatrix());
-			knotenT.accept(new Traverser());
+			knotenT.accept(new TraverserObject());
 		}
 		
 		

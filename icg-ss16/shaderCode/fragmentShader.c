@@ -14,8 +14,8 @@ out vec4 fragColor;
 //const vec3 ambientColor = vec3(0.1, 0.0, 0.0);
 const vec3 diffuseColor = vec3(0.4, 0.4, 0.4);
 const vec3 specColor = vec3(1.0, 1.0, 1.0);
-const float shininess = 600.0;
-const float screenGamma = 1.0;
+const float shininess = 10.0;
+const float screenGamma = 2.0;
 
 void main() {
 	vec3 normal;
@@ -27,14 +27,15 @@ void main() {
 		normal = normalize(normal * 2.0 - 1.0);
 	}
 	vec3 normalObj = normalize(normalInterp);
-	vec3 lightDir = normalize(lightPos);
+	vec3 lightDir = normalize(lightPos - vertPos);
 	float lambertian = max(dot(lightDir, normal), 0.0);
 	float specular = 0.0;
 	
 	if(lambertian > 0.0) {
 		vec3 viewDir = normalize(-vertPos);
-		vec3 halfDir = normalize(lightDir + viewDir);
-		float specAngle = max(dot(halfDir, normalObj), 0.0);
+		vec3 reflectDir = reflect(-lightDir, normal);
+		vec3 halfDir = normalize(lightDir - vertPos);
+		float specAngle = max(dot(reflectDir, viewDir), 0.0);
 		specular = pow(specAngle, shininess);
 		gl_FragColor = vec4(normal, 1.0);
 	}
@@ -42,6 +43,6 @@ void main() {
 	vec3 colorLinear = color + lambertian * diffuseColor
 			+ specular * specColor;
 	vec3 colorGammaCorrected = pow(colorLinear, vec3(1.0 / screenGamma));
-	if(lambertian <= 0.0)gl_FragColor = vec4(colorGammaCorrected, 1.0);
-	gl_FragColor = vec4(colorGammaCorrected, 1.0);
+	if(lambertian <= 0.0)
+		gl_FragColor = vec4(colorGammaCorrected, 1.0);
 }

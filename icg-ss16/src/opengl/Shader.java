@@ -33,6 +33,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL13;
 
 import icg.math.FactoryImpl;
+import myMath.VectorImpl;
 import ogl.app.MatrixUniform;
 import ogl.app.Texture;
 import ogl.app.Util;
@@ -74,12 +75,17 @@ public class Shader {
 
 	// the Vertex Array Object which will represent the cube
 	private List<VertexArrayObject> vertexObjects = new ArrayList<VertexArrayObject>();
-	private List<Matrix[]> matrixArray = new ArrayList<Matrix[]>();
-	private Vector LightPos;
+	private List<Matrix> matrixArray = new ArrayList<Matrix>();
+	private Matrix lightMatrix;
 	private Matrix viewMatrix;
 
-	public void addLightPos(Vector v) {
-		LightPos = v;
+	public void addLightPos(Matrix v) {
+		lightMatrix = v;
+	}
+	
+	private Vector setLightVector(){
+		Matrix lightTemp = viewMatrix.mult(lightMatrix);
+		return lightTemp.transformPoint(new VectorImpl(0,0,0));
 	}
 
 	public void addViewMatrix(Matrix view) {
@@ -100,9 +106,8 @@ public class Shader {
 		this.matrixArray.clear();
 	}
 
-	public void addMatrices(Matrix modelMatrix, Matrix normalMatrix) {
-		Matrix[] mArray = { modelMatrix, normalMatrix };
-		matrixArray.add(mArray);
+	public void addMatrices(Matrix modelMatrix) {
+		matrixArray.add(modelMatrix);
 	}
 
 	public static Shader getInstance() {
@@ -173,6 +178,7 @@ public class Shader {
 		// Clear all buffers.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		Vector LightPos = setLightVector();
 		glUniform3f(lightPos, LightPos.x(), LightPos.y(), LightPos.z());
 
 		// Assemble the transformation matrix that will be applied to all
@@ -197,9 +203,9 @@ public class Shader {
 			glUniform1i(texLoc, vertexObjects.get(i).knoten.getTextureIndex());
 
 			// The modeling transformation. Object space to world space.
-			modelMatrix = matrixArray.get(i)[0];
+			modelMatrix = matrixArray.get(i);
 
-			normalMatrix = matrixArray.get(i)[1].transpose();
+			normalMatrix = viewMatrix.mult(matrixArray.get(i)).invertFull().transpose();
 
 			// Activate the shader program and set the transformation matrices
 			// to

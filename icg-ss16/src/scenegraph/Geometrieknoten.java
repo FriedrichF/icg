@@ -10,6 +10,8 @@ public class Geometrieknoten extends Knoten {
 	public Vertex[] vertices;
 	private int textureIndex;
 	private int normalIndex;
+	private String texturePath;
+	private String normalPath;
 	
 	public int getTextureIndex() {
 		return textureIndex;
@@ -27,11 +29,27 @@ public class Geometrieknoten extends Knoten {
 		this.normalIndex = normalIndex;
 	}
 
-	public Geometrieknoten(String name, Matrix matrix, Vertex[] vertices, int textureIndex, int normalIndex) {
+	public String getTexturePath() {
+		return texturePath;
+	}
+
+	public void setTexturePath(String texturePath) {
+		this.texturePath = texturePath;
+	}
+
+	public String getNormalPath() {
+		return normalPath;
+	}
+
+	public void setNormalPath(String normalPath) {
+		this.normalPath = normalPath;
+	}
+
+	public Geometrieknoten(String name, Matrix matrix, Vertex[] vertices, String texturePath, String normalPath) {
 		super(name, matrix);
 		this.vertices = vertices;
-		this.textureIndex = textureIndex;
-		this.normalIndex = normalIndex;
+		this.texturePath = texturePath;
+		this.normalPath = normalPath;
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class Rotor extends Entity {
 				.mult(FactoryImpl.vecmath.rotationMatrix(rotateAxis, speed * elapsed));
 		
 		if(this.getKnoten() instanceof Lichtknoten)
-			Shader.getInstance().addLightPos(FactoryImpl.vecmath.getTranslation(calcMatrix));
+			Shader.getInstance().addLightPos(calcMatrix);
 		else
 			this.getKnoten().setTransformMatrix(calcMatrix);
 	}
