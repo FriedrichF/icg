@@ -85,7 +85,7 @@ public class Shader {
 	
 	private Vector setLightVector(){
 		Matrix lightTemp = viewMatrix.mult(lightMatrix);
-		return lightTemp.transformPoint(new VectorImpl(0,0,0));
+		return lightTemp.getPosition();
 	}
 
 	public void addViewMatrix(Matrix view) {
@@ -180,6 +180,7 @@ public class Shader {
 
 		Vector LightPos = setLightVector();
 		glUniform3f(lightPos, LightPos.x(), LightPos.y(), LightPos.z());
+//		glUniform3f(lightPos, 0,0,0);
 
 		// Assemble the transformation matrix that will be applied to all
 		// vertices in the vertex shader.

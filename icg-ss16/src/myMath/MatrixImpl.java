@@ -145,7 +145,7 @@ public class MatrixImpl implements Matrix {
 
 	@Override
 	public Vector getPosition() {
-		throw new IllegalArgumentException("getPosition");
+		return new VectorImpl(this.get(3, 0), this.get(3, 1), this.get(3, 2));
 	}
 
 	@Override

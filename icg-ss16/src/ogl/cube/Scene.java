@@ -73,13 +73,13 @@ public class Scene implements App {
 //		Knoten knotenA = new Gruppenknoten("KamerKnoten", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 //		Knoten bunnyKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(0, -1f, 0));
 //		Knoten kugelKnoten = new Gruppenknoten("Kugel Knoten", FactoryImpl.vecmath.translationMatrix(1, 0, 0));
-//		Knoten kugel = new Geometrieknoten("Kugel", FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f, 0.005f), sphere, 2,	-1);
+//		Knoten kugel = new Geometrieknoten("Kugel", FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f, 0.005f), sphere, "earth.jpg",	"");
 //		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-//		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, -3), cubeVertices, 0, 1);
-//		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, -3), cubeVertices, 0, -1);
-//		Knoten knotenCube3 = new Geometrieknoten("Cube3", FactoryImpl.vecmath.translationMatrix(0, -1, -1),	cubeVertices, 0, -1);
+//		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, -3), cubeVertices, "154.jpg", "154_norm.jpg");
+//		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, -3), cubeVertices, "154.jpg", "");
+//		Knoten knotenCube3 = new Geometrieknoten("Cube3", FactoryImpl.vecmath.translationMatrix(0, -1, -1),	cubeVertices, "154.jpg", "");
 //
-//		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 0, 1));
+//		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 1, 1));
 //
 //		knotenRoot.setChild(knotenA);
 //		knotenRoot.setChild(knotenCube);
@@ -95,7 +95,7 @@ public class Scene implements App {
 //		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(1, 0, 0), 30);
 //		Entity driver = new Driver("Driver", kamera, 0.01f);
 //
-//		entities.add(rotorLicht);
+////		entities.add(rotorLicht);
 //		entities.add(rotor3);
 //		entities.add(driver);
 //		entities.add(jumper);
