@@ -43,8 +43,7 @@ void main() {
 		vec3 decalColor = vec3(texture(tex, ftexCoord));
 
 		// output final color
-//		vec4 colorLinear = vec4((vec3(diffuse) + specular) * decalColor, 1.0);
-		vec4 colorLinear = vec4(specular, 1.0);
+		vec4 colorLinear = vec4((vec3(diffuse) + specular) * decalColor, 1.0);
 		vec4 colorGammaCorrected = pow(colorLinear, vec4(1.0 / screenGamma));
 		fragColor = colorGammaCorrected;
 }
