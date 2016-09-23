@@ -85,7 +85,7 @@ public class Shader {
 	
 	private Vector setLightVector(){
 		Matrix lightTemp = viewMatrix.mult(lightMatrix);
-		return lightTemp.getPosition();
+		return lightTemp.transformPoint(new VectorImpl(0,0,0));
 	}
 
 	public void addViewMatrix(Matrix view) {

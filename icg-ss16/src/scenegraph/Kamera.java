@@ -20,21 +20,27 @@ public class Kamera {
 	public Kamera(float x, float y, float z) {
 		// instantiate position Vector3f to the x y z params.
 		position = new VectorImpl(x, y, z);
+	}	
+
+	public void setPosition(Vector position) {
+		this.position.asArray()[0] = position.asArray()[0];
+		this.position.asArray()[1] = position.asArray()[1];
+		this.position.asArray()[2] = position.asArray()[2];
 	}
-	
-	public void setMousePosition(float x, float y){
+
+	public void setMousePosition(float x, float y) {
 		mousePositionX = x;
 		mousePositionY = y;
 	}
-	
-	public float getDX(Input input){
+
+	public float getDX(Input input) {
 		float newX = input.getMousePosition().x();
 		float delta = newX - mousePositionX;
 		mousePositionX = newX;
 		return delta;
 	}
-	
-	public float getDY(Input input){
+
+	public float getDY(Input input) {
 		float newY = input.getMousePosition().y();
 		float delta = newY - mousePositionY;
 		mousePositionY = newY;
@@ -86,7 +92,7 @@ public class Kamera {
 				.mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(1, 0, 0), pitch))
 				.mult(FactoryImpl.vecmath.rotationMatrix(new VectorImpl(0, 1, 0), yaw))
 				.mult(FactoryImpl.vecmath.translationMatrix(position));
-		
+
 		return viewMatrix;
 	}
 }

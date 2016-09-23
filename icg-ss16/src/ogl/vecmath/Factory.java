@@ -185,9 +185,7 @@ public interface Factory {
    */
   public abstract int colorSize();
 
-public Vector getTranslation(Matrix pop);
-
-public Matrix FPSViewRH(Vector vector, float vector2, float vector3);
+public abstract Vector getTranslation(Matrix pop);
   
   
 }

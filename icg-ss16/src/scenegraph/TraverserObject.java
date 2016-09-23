@@ -43,9 +43,8 @@ public class TraverserObject extends Traverser {
 		
 		Matrix pop = matrixStack.pop().invertFull();
 		
-//		Shader.getInstance().addKamera(new VectorImpl(pop.get(3, 0), pop.get(3, 1), pop.get(3, 2)), yaw, pitch);
 //		Shader.getInstance().addViewMatrix(pop);
-		
+		Shader.getInstance().addViewMatrix(kameraknoten.getCamera().lookThrough());
 	}
 
 	public void visit(Lichtknoten lichtknoten) {

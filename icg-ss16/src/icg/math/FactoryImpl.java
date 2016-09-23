@@ -7,6 +7,7 @@ import ogl.vecmath.Color;
 import ogl.vecmath.Factory;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
+import ogl.vecmathimp.FactoryDefault;
 
 public class FactoryImpl implements Factory {
 
@@ -186,6 +187,7 @@ public class FactoryImpl implements Factory {
 	}
 
 	public final static Factory vecmath = new FactoryImpl();
+//	public final static Factory vecmath = FactoryDefault.vecmath;
 
 	@Override
 	public int colorSize() {

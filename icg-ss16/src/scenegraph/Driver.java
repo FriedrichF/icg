@@ -51,7 +51,6 @@ public class Driver extends Entity {
 				pressed = false;
 			}
 
-			Shader.getInstance().addViewMatrix(cameraKnoten.getCamera().lookThrough());
 		} else {
 			if (input.isKeyDown(GLFW_KEY_W))
 				zRichtung = -1;
