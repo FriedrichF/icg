@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icg.math.FactoryImpl;
+import myMath.VectorImpl;
 import ogl.app.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Vector;
@@ -51,9 +52,11 @@ public class objLoader {
 		vertexIndices[2] = Integer.parseInt(zFace[0]);
 
 		int[] textureIndices = new int[3];
-		textureIndices[0] = Integer.parseInt(xFace[1]);
-		textureIndices[1] = Integer.parseInt(yFace[1]);
-		textureIndices[2] = Integer.parseInt(zFace[1]);
+		if (!xFace[1].equals("")) {
+			textureIndices[0] = Integer.parseInt(xFace[1]);
+			textureIndices[1] = Integer.parseInt(yFace[1]);
+			textureIndices[2] = Integer.parseInt(zFace[1]);
+		}
 
 		int[] normalIndices = new int[3];
 		normalIndices[0] = Integer.parseInt(xFace[2]);
@@ -68,17 +71,34 @@ public class objLoader {
 
 		for (Face face : m.getFaces()) {
 			// x
+			Vector texturVecX;
+			int x = face.getTexturIndex()[0];
+			if(x == 0)
+				texturVecX = null;
+			else
+				texturVecX = m.getTextures().get(face.getTexturIndex()[0] - 1);
+			
 			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[0] - 1), c,
 					m.getNormals().get(face.getNormalIndex()[0] - 1),
-					m.getTextures().get(face.getTexturIndex()[0] - 1)));
+					texturVecX));
 			// y
+			Vector texturVecY;
+			if(face.getTexturIndex()[1] == 0)
+				texturVecY = null;
+			else
+				texturVecY = m.getTextures().get(face.getTexturIndex()[1] - 1);
 			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[1] - 1), c,
 					m.getNormals().get(face.getNormalIndex()[1] - 1),
-					m.getTextures().get(face.getTexturIndex()[1] - 1)));
+					texturVecY));
 			// z
+			Vector texturVecZ;
+			if(face.getTexturIndex()[2] == 0)
+				texturVecZ = null;
+			else
+				texturVecZ = m.getTextures().get(face.getTexturIndex()[2] - 1);
 			bunnyVertex.add(new Vertex(m.getVertices().get(face.getVertexIndex()[2] - 1), c,
 					m.getNormals().get(face.getNormalIndex()[2] - 1),
-					m.getTextures().get(face.getTexturIndex()[2] - 1)));
+					texturVecZ));
 		}
 
 		Vertex[] bunnyArray = new Vertex[bunnyVertex.size()];

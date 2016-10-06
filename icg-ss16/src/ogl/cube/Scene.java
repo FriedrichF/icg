@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icg.math.FactoryImpl;
+import myMath.VectorImpl;
 import obj.Model;
 import obj.objLoader;
 import ogl.app.App;
@@ -36,47 +37,57 @@ public class Scene implements App {
 
 	Gruppenknoten knotenRoot;
 
-	@Override
-	public void init() {
+	private Vertex[] getVertexArray(String path) {
 		Model m = new Model();
 		try {
-			m = objLoader.loadFile("objFiles/naboo.obj");
+			m = objLoader.loadFile(path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		return objLoader.getVertexArray(m, col(0.1f, 0, 0));
+	}
+
+	@Override
+	public void init() {
+
 		shader = Shader.getInstance();
 
-//		List<TextureNormal> textures = new ArrayList<TextureNormal>();
-//		textures.add(new TextureNormal("154.jpg", false));
-//		textures.add(new TextureNormal("154_norm.jpg", true));
-//		textures.add(new TextureNormal("earth.jpg", false));
-//		textures.add(new TextureNormal("sun.jpg", false));
-//		textures.add(new TextureNormal("moonmap1k.jpg", false));
-//		textures.add(new TextureNormal("sterne.jpg", false));
-//		textures.add(new TextureNormal("earth_norm.jpg", true));
-//
-//		shader.initTextures(textures);
+		// List<TextureNormal> textures = new ArrayList<TextureNormal>();
+		// textures.add(new TextureNormal("154.jpg", false));
+		// textures.add(new TextureNormal("154_norm.jpg", true));
+		// textures.add(new TextureNormal("earth.jpg", false));
+		// textures.add(new TextureNormal("sun.jpg", false));
+		// textures.add(new TextureNormal("moonmap1k.jpg", false));
+		// textures.add(new TextureNormal("sterne.jpg", false));
+		// textures.add(new TextureNormal("earth_norm.jpg", true));
+		//
+		// shader.initTextures(textures);
 
-		Vertex[] sphere = objLoader.getVertexArray(m, col(0.1f, 0, 0));
+		Vertex[] sphere = getVertexArray("objFiles/naboo.obj");
+		Vertex[] bunny = getVertexArray("objFiles/bunny.obj");
 
 		knotenRoot = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenLicht = new Gruppenknoten("Root", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
 		Knoten knotenA = new Gruppenknoten("KamerKnoten", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-		Knoten bunnyKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(0, -1f, 0));
 		Knoten kugelKnoten = new Gruppenknoten("Kugel Knoten", FactoryImpl.vecmath.translationMatrix(1, 0, 0));
-		Knoten kugel = new Geometrieknoten("Kugel", FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f, 0.005f), sphere, "earth.jpg",	"");
+		Knoten kugel = new Geometrieknoten("Kugel", FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f, 0.005f), sphere,
+				"earth.jpg", "");
 		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, -3), cubeVertices, "154.jpg", "154_norm.jpg");
-		Knoten knotenCube2 = new Geometrieknoten("Cube2", FactoryImpl.vecmath.translationMatrix(1.5f, 0, -3), cubeVertices, "154.jpg", "");
-		Knoten knotenCube3 = new Geometrieknoten("Cube3", FactoryImpl.vecmath.translationMatrix(0, -1, -1),	cubeVertices, "154.jpg", "");
+		Knoten knotenCube = new Geometrieknoten("Cube", FactoryImpl.vecmath.translationMatrix(0, 0, -3), cubeVertices,
+				"", "");
+		Knoten bunnyKnoten = new Geometrieknoten("bunnyKnoten", FactoryImpl.vecmath.translationMatrix(1.5f, 0, -3)
+				.mult(FactoryImpl.vecmath.scaleMatrix(new VectorImpl(5, 5, 5))), bunny, "154.jpg", "");
+		Knoten knotenCube3 = new Geometrieknoten("Cube3", FactoryImpl.vecmath.translationMatrix(0, -1, -1),
+				cubeVertices, "154.jpg", "154_norm.jpg");
 
 		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 0, 1));
 
 		knotenRoot.setChild(knotenA);
 		knotenRoot.setChild(knotenCube);
 		knotenRoot.setChild(kugelKnoten);
+		knotenRoot.setChild(bunnyKnoten);
 		knotenRoot.setChild(knotenLicht);
 		kugelKnoten.setChild(kugel);
 		knotenLicht.setChild(lichtKnoten);
@@ -88,42 +99,56 @@ public class Scene implements App {
 		Entity rotor3 = new Rotor("Rotation", knotenCube, vec(1, 0, 0), 30);
 		Entity driver = new Driver("Driver", kamera, 0.01f);
 
-//		entities.add(rotorLicht);
+		// entities.add(rotorLicht);
 		entities.add(rotor3);
 		entities.add(driver);
 		entities.add(jumper);
-		
-//		Knoten knotenLicht = new Gruppenknoten("knoten Sonne", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-//		Knoten sonne = new Geometrieknoten("Sonne", FactoryImpl.vecmath.scaleMatrix(0.002f, 0.002f, 0.002f), sphere, "sun.jpg",	"");
-//		Knoten erdeKnoten = new Gruppenknoten("BunnyKnoten", FactoryImpl.vecmath.translationMatrix(3f, 0, 0));
-//		Knoten erde = new Geometrieknoten("Erde", FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f, 0.005f).mult(FactoryImpl.vecmath.rotationMatrix(vec(1,0,0), 90)), sphere, "earth.jpg", "earth_norm.jpg");
-//		Knoten mond = new Geometrieknoten("Mond", FactoryImpl.vecmath.translationMatrix(1f,0,0).mult(FactoryImpl.vecmath.scaleMatrix(0.001f, 0.001f, 0.001f)).mult(FactoryImpl.vecmath.rotationMatrix(vec(1,0,0), 90)), sphere, "moonmap1k.jpg", "");
-//		
-//		Knoten kamera = new Kameraknoten("kamera", FactoryImpl.vecmath.translationMatrix(0, -1, -2));
-//		
-//		Knoten lichtKnoten = new Lichtknoten("Licht", FactoryImpl.vecmath.translationMatrix(0, 0, 0));
-//		
-//		knotenRoot.setChild(kamera);
-//		knotenRoot.setChild(knotenLicht);
-//		knotenRoot.setChild(lichtKnoten);
-//		knotenRoot.setChild(sonne);
-//		knotenLicht.setChild(erdeKnoten);
-//		erdeKnoten.setChild(erde);
-//		erdeKnoten.setChild(mond);
-//		
-//		Entity driver = new Driver("Driver", kamera, 0.01f);
-//		Entity sonnenRot = new Rotor("Sonnen rotation", knotenLicht, vec(0, 1, 0), 20);
-//		Entity erdeUmlauf = new Rotor("Erd umlaufbahn", erdeKnoten, vec(0, 1, 0), 10);
-//		Entity erdeRot = new Rotor("Erd rotation", erde, vec(0, 0, 1), 50);
-//		
-//		entities.add(sonnenRot);
-//		entities.add(erdeUmlauf);
-//		entities.add(erdeRot);
-//		entities.add(driver);
-		
+
+		// Knoten knotenLicht = new Gruppenknoten("knoten Sonne",
+		// FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		// Knoten sonne = new Geometrieknoten("Sonne",
+		// FactoryImpl.vecmath.scaleMatrix(0.002f, 0.002f, 0.002f), sphere,
+		// "sun.jpg", "");
+		// Knoten erdeKnoten = new Gruppenknoten("BunnyKnoten",
+		// FactoryImpl.vecmath.translationMatrix(3f, 0, 0));
+		// Knoten erde = new Geometrieknoten("Erde",
+		// FactoryImpl.vecmath.scaleMatrix(0.005f, 0.005f,
+		// 0.005f).mult(FactoryImpl.vecmath.rotationMatrix(vec(1,0,0), 90)),
+		// sphere, "earth.jpg", "earth_norm.jpg");
+		// Knoten mond = new Geometrieknoten("Mond",
+		// FactoryImpl.vecmath.translationMatrix(1f,0,0).mult(FactoryImpl.vecmath.scaleMatrix(0.001f,
+		// 0.001f, 0.001f)).mult(FactoryImpl.vecmath.rotationMatrix(vec(1,0,0),
+		// 90)), sphere, "moonmap1k.jpg", "");
+		//
+		// Knoten kamera = new Kameraknoten("kamera",
+		// FactoryImpl.vecmath.translationMatrix(0, -1, -2));
+		//
+		// Knoten lichtKnoten = new Lichtknoten("Licht",
+		// FactoryImpl.vecmath.translationMatrix(0, 0, 0));
+		//
+		// knotenRoot.setChild(kamera);
+		// knotenRoot.setChild(knotenLicht);
+		// knotenRoot.setChild(lichtKnoten);
+		// knotenRoot.setChild(sonne);
+		// knotenLicht.setChild(erdeKnoten);
+		// erdeKnoten.setChild(erde);
+		// erdeKnoten.setChild(mond);
+		//
+		// Entity driver = new Driver("Driver", kamera, 0.01f);
+		// Entity sonnenRot = new Rotor("Sonnen rotation", knotenLicht, vec(0,
+		// 1, 0), 20);
+		// Entity erdeUmlauf = new Rotor("Erd umlaufbahn", erdeKnoten, vec(0, 1,
+		// 0), 10);
+		// Entity erdeRot = new Rotor("Erd rotation", erde, vec(0, 0, 1), 50);
+		//
+		// entities.add(sonnenRot);
+		// entities.add(erdeUmlauf);
+		// entities.add(erdeRot);
+		// entities.add(driver);
+
 		TraverserTexture texTraverser = new TraverserTexture();
 		knotenRoot.accept(texTraverser);
-		
+
 		shader.initTextures(texTraverser.getTextures());
 
 		traverser = new TraverserObject();
@@ -137,7 +162,7 @@ public class Scene implements App {
 	 */
 	@Override
 	public void simulate(float elapsed, Input input) {
-	
+
 		for (Entity entity : entities) {
 			entity.simulate(elapsed, input);
 		}
@@ -212,11 +237,11 @@ public class Scene implements App {
 	private Vector[] t = { vec(0, 0, 0), vec(1, 0, 0), vec(1, 1, 0), vec(0, 1, 0) };
 
 	// The colors of the cube vertices.
-	// private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1,
-	// 0), col(1, 0, 1), col(0, 0, 1),
-	// col(0, 1, 1), col(1, 1, 1) };
-	private Color[] c = { col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0),
-			col(0f, 0f, 0), col(0, 0f, 0) };
+	private Color[] c = { col(0, 0, 0), col(1, 0, 0), col(1, 1, 0), col(0, 1, 0), col(1, 0, 1), col(0, 0, 1),
+			col(0, 1, 1), col(1, 1, 1) };
+	// private Color[] c = { col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0),
+	// col(0f, 0, 0), col(0f, 0, 0), col(0f, 0, 0),
+	// col(0f, 0f, 0), col(0, 0f, 0) };
 
 	private Vector[] n = { vec(0f, 0f, 0.5f), vec(0f, 0f, -0.5f), vec(0.5f, 0f, 0f), vec(0f, 0.5f, 0f),
 			vec(-0.5f, 0f, 0f), vec(0f, -0.5f, 0f) };

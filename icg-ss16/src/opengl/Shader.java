@@ -71,6 +71,7 @@ public class Shader {
 	private int texLoc;
 	private int normalLoc;
 	private int hasNormalLoc;
+	private int hasTextureLoc;
 	private int lightPos;
 
 	// the Vertex Array Object which will represent the cube
@@ -168,6 +169,7 @@ public class Shader {
 		texLoc = glGetUniformLocation(program, "tex");
 		normalLoc = glGetUniformLocation(program, "normalTex");
 		hasNormalLoc = glGetUniformLocation(program, "hasNormal");
+		hasTextureLoc = glGetUniformLocation(program, "hasTexture");
 	}
 
 	public void display(int width, int height) {
@@ -193,16 +195,19 @@ public class Shader {
 		Matrix normalMatrix;
 
 		for (int i = 0; i < vertexObjects.size(); i++) {
-			if(vertexObjects.get(i).knoten.getNormalIndex() == -1){
+			if(vertexObjects.get(i).knoten.getTextureIndex()== -1){
+				glUniform1f(hasTextureLoc, 0.0f);
 				glUniform1f(hasNormalLoc, 0.0f);
 			}else{
-				glUniform1f(hasNormalLoc, 1.0f);
-				glUniform1f(normalLoc, vertexObjects.get(i).knoten.getNormalIndex());
+				glUniform1f(hasTextureLoc, 1.0f);
+				glUniform1i(texLoc, vertexObjects.get(i).knoten.getTextureIndex());
+				
+				if(vertexObjects.get(i).knoten.getNormalIndex() != -1){
+					glUniform1f(hasNormalLoc, 1.0f);
+					glUniform1f(normalLoc, vertexObjects.get(i).knoten.getNormalIndex());
+				}
 			}
 			
-			
-			glUniform1i(texLoc, vertexObjects.get(i).knoten.getTextureIndex());
-
 			// The modeling transformation. Object space to world space.
 			modelMatrix = matrixArray.get(i);
 
@@ -262,6 +267,8 @@ public class Shader {
 
 	public void initTextures(List<TextureNormal> textures) {
 		for(int i = 0; i < textures.size(); i++){
+			if(textures.get(i).getTexturePath().equals(""))
+				continue;
 			GL13.glActiveTexture(GL13.GL_TEXTURE0 + i);
 			Texture texture = new Texture(new File(textures.get(i).getTexturePath()));
 			texture.bind();

@@ -25,6 +25,10 @@ public class TraverserTexture extends Traverser {
 
 	@Override
 	public void visit(Geometrieknoten k) {
+		if(k.getTexturePath().equals("")){
+			k.setTextureIndex(-1);
+			return;
+		}
 		textures.add(new TextureNormal(k.getTexturePath(), false));
 		
 		k.setTextureIndex(textureID);
